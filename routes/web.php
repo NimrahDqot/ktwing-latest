@@ -35,6 +35,9 @@ use App\Http\Controllers\Admin\FaqController as FaqControllerForAdmin;
 use App\Http\Controllers\Admin\RoleController as RoleControllerForAdmin;
 use App\Http\Controllers\Admin\PackageController as PackageControllerForAdmin;
 use App\Http\Controllers\Admin\PurchaseHistoryController as PurchaseHistoryControllerForAdmin;
+use App\Http\Controllers\Admin\TeamCategoryController as TeamCategoryControllerForAdmin;
+use App\Http\Controllers\Admin\IdproofController as IdCardControllerForAdmin;
+
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\ClearDatabaseController;
 use App\Http\Controllers\Admin\PageDreamPropertyController;
@@ -50,10 +53,6 @@ use App\Http\Controllers\Admin\WithdrawController;
 use App\Http\Controllers\Admin\RewardController;
 use App\Http\Controllers\Admin\VolunteerController;
 use App\Http\Controllers\Admin\VillageController;
-use App\Http\Controllers\Admin\DistrictController;
-use App\Http\Controllers\Admin\VidhanaSabhaController;
-use App\Http\Controllers\Admin\StateController;
-
 use App\Http\Controllers\Admin\EventCategoryController;
 use App\Http\Controllers\Admin\AttendeesController;
 use App\Http\Controllers\Admin\EventController;
@@ -79,19 +78,23 @@ use Illuminate\Support\Facades\Response;
 /* --------------------------------------- */
 /* Login and profile management */
 /* --------------------------------------- */
-
+Route::get('/data',function(){
+    return view('state_district');
+});
 // In web.php or api.php
 Route::get('/', [HomeController::class,'index'])
     ->name('index');
 
 
-    Route::get('/get-apk', function () {
-        $filePath = public_path('apk/ktwing.apk'); // Correct filesystem path
-        $fileName = 'ktwing.apk'; // Name of the APK file to be downloaded
 
-        // Check if the file exists before attempting to download
-        if (file_exists($filePath)) {
-            return Response::download($filePath, $fileName);
+     Route::get('/get-apk', function () {
+        if (1) {
+              $filePath = public_path('apk/ktwing.apk');
+              $headers = [
+                  'Content-Type' => 'application/vnd.android.package-archive',
+                  'Content-Disposition' => 'attachment; filename="ktwing.apk"',
+              ];
+              return response()->download($filePath, 'ktwing.apk', $headers);
         } else {
             abort(404, 'File not found');
         }
@@ -973,6 +976,9 @@ Route::get('admin/user-delete/{id}', [VolunteerController::class,'admin_user_del
 Route::post('/submit-rejection-reason-user', [VolunteerController::class, 'submitRejectionReasonUser'])->name('submit_rejection_reason_user');
 Route::post('admin/change-user-status', [VolunteerController::class, 'user_status'])->name('change_user_status');
 Route::get('admin/user-refer-user/{id}', [VolunteerController::class,'user_refer_user'])->name('user_refer_user'); // refered by users all user
+Route::get('admin/volunteer_id_card_download/{id}', [VolunteerController::class,'volunteer_id_card_download'])->name('volunteer_id_card_download'); // refered by users all user
+
+
 
 /* --------------------------------------- */
 /* Village Admin */
@@ -997,79 +1003,10 @@ Route::post('admin/village/update/{id}', [VillageController::class,'update'])
 
 Route::get('admin/village-status/{id}', [VillageController::class,'change_status']);
 
-/* --------------------------------------- */
-/* District Admin */
-/* --------------------------------------- */
-Route::get('admin/district/view', [DistrictController::class,'index'])
-->name('admin_district_view');
-
-Route::get('admin/district/create', [DistrictController::class,'create'])
-->name('admin_district_create');
-
-Route::post('admin/district/store', [DistrictController::class,'store'])
-->name('admin_district_store');
-
-Route::get('admin/district/delete/{id}', [DistrictController::class,'destroy'])
-->name('admin_district_delete');
-
-Route::get('admin/district/edit/{id}', [DistrictController::class,'edit'])
-->name('admin_district_edit');
-
-Route::post('admin/district/update/{id}', [DistrictController::class,'update'])
-->name('admin_district_update');
-
-Route::get('admin/district-status/{id}', [DistrictController::class,'change_status']);
-
-
-
-/* --------------------------------------- */
-/* VidhanaSabha Admin */
-/* --------------------------------------- */
-Route::get('admin/vidhanasabha/view', [VidhanaSabhaController::class,'index'])
-->name('admin_vidhanasabha_view');
-
-Route::get('admin/vidhanasabha/create', [VidhanaSabhaController::class,'create'])
-->name('admin_vidhanasabha_create');
-
-Route::post('admin/vidhanasabha/store', [VidhanaSabhaController::class,'store'])
-->name('admin_vidhanasabha_store');
-
-Route::get('admin/vidhanasabha/delete/{id}', [VidhanaSabhaController::class,'destroy'])
-->name('admin_vidhanasabha_delete');
-
-Route::get('admin/vidhanasabha/edit/{id}', [VidhanaSabhaController::class,'edit'])
-->name('admin_vidhanasabha_edit');
-
-Route::post('admin/vidhanasabha/update/{id}', [VidhanaSabhaController::class,'update'])
-->name('admin_vidhanasabha_update');
-
-Route::get('admin/vidhanasabha-status/{id}', [VidhanaSabhaController::class,'change_status']);
-
-
-
-/* --------------------------------------- */
-/* State Admin */
-/* --------------------------------------- */
-Route::get('admin/state/view', [StateController::class,'index'])
-->name('admin_state_view');
-
-Route::get('admin/state/create', [StateController::class,'create'])
-->name('admin_state_create');
-
-Route::post('admin/state/store', [StateController::class,'store'])
-->name('admin_state_store');
-
-Route::get('admin/state/delete/{id}', [StateController::class,'destroy'])
-->name('admin_state_delete');
-
-Route::get('admin/state/edit/{id}', [StateController::class,'edit'])
-->name('admin_state_edit');
-
-Route::post('admin/state/update/{id}', [StateController::class,'update'])
-->name('admin_state_update');
-
-Route::get('admin/state-status/{id}', [StateController::class,'change_status']);
-
+// web.php (routes file)
+Route::get('admin/get-district/{state_id}', [VillageController::class, 'getCities']);
+Route::get('admin/get-sub-district/{get_sub_district}', [VillageController::class, 'getSubDistrict']);
+Route::get('admin/get-sub-district-village/{get_sub_district_village}', [VillageController::class, 'getSubDistrictVillage']);
 
 
 
@@ -1248,3 +1185,65 @@ Route::post('admin/level-reward/update/{id}', [LevelRewardController::class,'upd
 
 
 Route::get('admin/change-level-reward-status/{id}', [LevelRewardController::class,'change_status'])->name('change-level-reward-status');
+
+
+
+/* --------------------------------------- */
+/* Team Category - Team Category */
+/* --------------------------------------- */
+Route::get('admin/team-category/view', [TeamCategoryControllerForAdmin::class,'index'])
+->name('admin_team_category_view');
+
+Route::get('admin/team-category/create', [TeamCategoryControllerForAdmin::class,'create'])
+->name('admin_team_category_create');
+
+Route::post('admin/team-category/store', [TeamCategoryControllerForAdmin::class,'store'])
+->name('admin_team_category_store');
+
+Route::get('admin/team-category/delete/{id}', [TeamCategoryControllerForAdmin::class,'destroy'])
+->name('admin_team_category_delete');
+
+Route::get('admin/team-category/edit/{id}', [TeamCategoryControllerForAdmin::class,'edit'])
+->name('admin_team_category_edit');
+
+Route::post('admin/team-category/update/{id}', [TeamCategoryControllerForAdmin::class,'update'])
+->name('admin_team_category_update');
+
+Route::get('admin/team-category-status/{id}', [TeamCategoryControllerForAdmin::class,'change_status']);
+
+
+
+
+
+/* --------------------------------------- */
+/* Id-card  */
+/* --------------------------------------- */
+// Route::resource('admin/id-card/view', IdCardControllerForAdmin::class);
+Route::get('admin/id-card/view', [IdCardControllerForAdmin::class,'index'])
+->name('admin_id_card_view');
+
+Route::get('admin/id-card-download_pdf/{id}/{filter}', [IdCardControllerForAdmin::class,'download_pdf'])
+->name('id_card_download_pdf');
+
+Route::get('admin/id-card-preview/{id}/{filter}', [IdCardControllerForAdmin::class,'preview_pdf'])
+->name('id_card_preview');
+
+Route::get('admin/id-card/create', [IdCardControllerForAdmin::class,'create'])
+->name('admin_id_card_create');
+
+Route::post('admin/id-card/store', [IdCardControllerForAdmin::class,'store'])
+->name('admin_id_card_store_data');
+
+Route::get('admin/id-card/delete/{id}', [IdCardControllerForAdmin::class,'destroy'])
+->name('admin_id_card_delete');
+
+Route::get('admin/id-card/edit/{id}', [IdCardControllerForAdmin::class,'edit'])
+->name('admin_id_card_edit');
+
+Route::post('admin/id-card/update/{id}', [IdCardControllerForAdmin::class,'update'])
+->name('admin_id_card_update');
+
+Route::get('admin/id-card-status/{id}', [IdCardControllerForAdmin::class,'change_status']);
+
+
+Route::get('/clear-all-caches', [VolunteerController::class,'clearAllCaches']);

@@ -45,6 +45,7 @@ class BaseController extends Controller
 
         return response()->json($response, $code);
     }
+
     public function sendUnauthorize($error,$code = 202)
     {
         $response = [
@@ -54,6 +55,21 @@ class BaseController extends Controller
 
         return response()->json($response, $code);
     }
+    // public function sendError($error, $errorMessages = [], $code = 400)
+    // {
+    //     $response = [
+    //         'success' => false,
+    //         'message' => $error,
+    //     ];
+    //
+    //
+    //     if (!empty($errorMessages)) {
+    //         $response['data'] = $errorMessages;
+    //     }
+    //
+    //
+    //     return response()->json($response, $code);
+    // }
     public function sendSuccessError($error, $errorMessages = [], $code = 200)
     {
         $response = [

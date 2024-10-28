@@ -20,11 +20,24 @@
                             <input type="text" name="title" class="form-control" value="{{ $banner->title }}" autofocus>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Type *</label>
-                            <input type="text" name="type" class="form-control" value="{{ $banner->type }}">
+                            <label for="type">Type *</label>
+                            <select name="type" class="form-control" id="typeSelect">
+                                <option value="" disabled selected>--Please select type--</option>
+                                <option value="banner" {{ $banner->type == 'banner' ? 'selected' : '' }}>Banner</option>
+                                <option value="logo" {{ $banner->type == 'logo' ? 'selected' : '' }}>Logo</option>
+                                <option value="offer" class="offer-select" {{ $banner->type == 'offer' ? 'selected' : '' }}>Offers</option>
+                            </select>
                         </div>
+                    </div>
+                    <div class="col-md-4 offer-amount {{ $banner->type == 'offer' ? 'd-block' : 'd-none' }}">
+                        <div class="form-group ">
+                            <label for="offerAmount">Offer Amount</label>
+                            <input type="number" name="offer_amount" class="form-control" value="{{ $banner->offer_amount }}">
+                        </div>
+
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
@@ -53,4 +66,17 @@
             </div>
         </div>
     </form>
+
+    <script>
+        $(document).ready(function(){
+            $('#typeSelect').change(function(){
+                var selectedValue = $(this).val();
+                if (selectedValue === 'offer') {
+                    $('.offer-amount').removeClass('d-none').addClass('d-block');
+                } else {
+                    $('.offer-amount').removeClass('d-block').addClass('d-none');
+                }
+            });
+        });
+    </script>
 @endsection

@@ -32,7 +32,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="h4 font-weight-bold text-success mb-1">Volunteers</div>
+                            <div class="h4 font-weight-bold text-success mb-1">Teams</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{$total_volunteers}}</div>
                         </div>
                         <div class="col-auto">

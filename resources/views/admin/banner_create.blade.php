@@ -22,10 +22,23 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Type *</label>
-                            <input type="text" name="type" class="form-control" value="{{ old('type') }}">
+                            <label for="type">Type *</label>
+                            <select name="type" class="form-control" id="typeSelect">
+                                <option value="" disabled selected>--Please select type--</option>
+                                <option value="banner">Banner</option>
+                                <option value="logo">Logo</option>
+                                <option value="offer" class="offer-select">Offers</option>
+                            </select>
                         </div>
                     </div>
+                    <div class="col-md-4 offer-amount d-none">
+                        <div class="form-group ">
+                            <label for="offerAmount">Offer Amount</label>
+                            <input type="number" name="offer_amount" class="form-control">
+                        </div>
+
+                    </div>
+
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="">Sort *</label>
@@ -54,4 +67,18 @@
             </div>
         </div>
     </form>
+
+    <script>
+    $(document).ready(function(){
+        $('#typeSelect').change(function(){
+            var selectedValue = $(this).val();
+            if (selectedValue === 'offer') {
+                $('.offer-amount').removeClass('d-none').addClass('d-block');
+            } else {
+                $('.offer-amount').removeClass('d-block').addClass('d-none');
+            }
+        });
+    });
+</script>
+
 @endsection

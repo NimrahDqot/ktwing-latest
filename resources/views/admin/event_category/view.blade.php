@@ -5,7 +5,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 mt-2 font-weight-bold text-primary">Volunteer</h6>
+            <h6 class="m-0 mt-2 font-weight-bold text-primary">Event Category</h6>
             <div class="float-right d-inline">
                 <a href="{{ route('admin_event_category_create') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> {{ ADD_NEW }}</a>
             </div>

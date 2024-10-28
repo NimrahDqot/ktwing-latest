@@ -45,7 +45,7 @@ class ClearDatabaseController extends Controller
         if(env('PROJECT_MODE') == 0) {
             return redirect()->back()->with('error', env('PROJECT_NOTIFICATION'));
         }
-
+        
         // amenities
         Amenity::truncate();
 
@@ -79,7 +79,7 @@ class ClearDatabaseController extends Controller
         }
         DynamicPage::truncate();
 
-
+        
         // email_templates
         // can not remove
 
@@ -152,8 +152,8 @@ class ClearDatabaseController extends Controller
             @unlink(public_path('uploads/property_featured_photos/'.$row->property_featured_photo));
         }
         Property::truncate();
-
-
+        
+        
         // property_additional_features
         PropertyAdditionalFeature::truncate();
 
@@ -185,10 +185,10 @@ class ClearDatabaseController extends Controller
         }
         PropertyPhoto::truncate();
 
-
+        
         // property_social_items
         PropertySocialItem::truncate();
-
+        
         // property_videos
         PropertyVideo::truncate();
 
@@ -207,16 +207,16 @@ class ClearDatabaseController extends Controller
             @unlink(public_path('uploads/testimonials/'.$row->photo));
         }
         Testimonial::truncate();
-
-
+        
+        
         // users
         $user_data = User::get();
         foreach($user_data as $row) {
             if($row->photo!='') {
-                @unlink(public_path('uploads/user_photos/'.$row->photo));
+                @unlink(public_path('uploads/user_photos/'.$row->photo));    
             }
             if($row->banner!='') {
-                @unlink(public_path('uploads/user_photos/'.$row->banner));
+                @unlink(public_path('uploads/user_photos/'.$row->banner));    
             }
         }
         User::truncate();
@@ -224,9 +224,9 @@ class ClearDatabaseController extends Controller
 
         // wishlists
         Wishlist::truncate();
-
-
-
+        
+                
+        
 
         return redirect()->back()->with('success', SUCCESS_DATABASE_CLEAR);
     }

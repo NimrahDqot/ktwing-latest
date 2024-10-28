@@ -21,13 +21,12 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-
         if(env('PROJECT_MODE') == 0) {
             return redirect()->back()->with('error', env('PROJECT_NOTIFICATION'));
         }
 
-        if($request->hasFile('logo')){
-
+        if($request->logo != '')
+        {
             $request->validate([
                 'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ],[
@@ -36,7 +35,7 @@ class SettingController extends Controller
                 'logo.max' => ERR_PHOTO_MAX
             ]);
 
-            @unlink(public_path('uploads/site_photos/'.$request->logo));
+            @unlink(public_path('uploads/site_photos/'.$request->current_logo));
 
             $ext = $request->file('logo')->extension();
             $rand_value = md5(mt_rand(11111111,99999999));
@@ -46,8 +45,8 @@ class SettingController extends Controller
             $data['logo'] = $final_name;
         }
 
-        if($request->hasFile('favicon')){
-
+        if($request->favicon != '')
+        {
             $request->validate([
                 'favicon' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ],[
@@ -56,7 +55,7 @@ class SettingController extends Controller
                 'favicon.max' => ERR_PHOTO_MAX
             ]);
 
-            @unlink(public_path('uploads/site_photos/'.$request->favicon));
+            @unlink(public_path('uploads/site_photos/'.$request->current_favicon));
 
             $ext = $request->file('favicon')->extension();
             $rand_value = md5(mt_rand(11111111,99999999));
@@ -65,73 +64,54 @@ class SettingController extends Controller
 
             $data['favicon'] = $final_name1;
         }
-        $socialData = [];
-        foreach ($request->social_icon as $index => $icon) {
-            $socialData[$icon] = $request->social_url[$index] ?? null; // Use null if the URL is not set
-        }
-        // Convert the associative array to JSON
-        $socialDataJson = json_encode($socialData);
-
-
-        // // Convert the associative array to JSON
-        // $socialDataJson = json_encode($socialData);
 
         $data['top_phone'] = $request->input('top_phone');
         $data['top_email'] = $request->input('top_email');
 
+        $data['footer_column_1_heading'] = $request->input('footer_column_1_heading');
+        $data['footer_column_1_total_item'] = $request->input('footer_column_1_total_item');
+        $data['footer_column_2_heading'] = $request->input('footer_column_2_heading');
+        $data['footer_column_2_total_item'] = $request->input('footer_column_2_total_item');
+        $data['footer_column_3_heading'] = $request->input('footer_column_3_heading');
+        $data['footer_column_4_heading'] = $request->input('footer_column_4_heading');
 
-        $data['footer_address_1_heading'] = $request->input('footer_address_1_heading');
         $data['footer_address'] = $request->input('footer_address');
-        $data['footer_address_2_heading'] = $request->input('footer_address_2_heading');
-        $data['footer_another_address'] = $request->input('footer_another_address');
         $data['footer_email'] = $request->input('footer_email');
         $data['footer_phone'] = $request->input('footer_phone');
+
+        $data['footer_address_1_heading'] = $request->input('footer_address_1_heading');
+        $data['footer_address_2_heading'] = $request->input('footer_address_2_heading');
+        $data['footer_another_address'] = $request->input('footer_another_address');
         $data['footer_other_phone'] = $request->input('footer_other_phone');
-        $data['footer_copyright'] = $request->input('footer_copyright');
 
-        $data['app_name'] = $request->input('app_name');
-        $data['short_description'] = $request->input('short_description');
-        $data['long_description'] = $request->input('long_description');
-        $data['about_us'] = $request->input('about_us');
+        $data['google_recaptcha_site_key'] = $request->input('google_recaptcha_site_key');
+        $data['google_recaptcha_status'] = $request->input('google_recaptcha_status');
 
-        $data['sms_api_key'] = $request->get('sms_api_key');
-        $data['sms_api_secret'] = $request->get('sms_api_secret');
-        $data['sms_sender_id'] = $request->get('sms_sender_id');
-        $data['sms_api_url'] = $request->get('sms_api_url');
-        $data['sms_gateway_username'] = $request->get('sms_gateway_username');
-        $data['sms_gateway_password'] = $request->get('sms_gateway_password');
-        $data['sms_status'] = $request->get('sms_status');
+        $data['google_analytic_tracking_id'] = $request->input('google_analytic_tracking_id');
+        $data['google_analytic_status'] = $request->input('google_analytic_status');
 
-        $data['paypal_environment'] = $request->get('paypal_environment');
-        $data['paypal_client_id'] = $request->get('paypal_client_id');
-        $data['paypal_secret_key'] = $request->get('paypal_secret_key');
-        $data['paypal_status'] = $request->get('paypal_status');
+        $data['tawk_live_chat_property_id'] = $request->input('tawk_live_chat_property_id');
+        $data['tawk_live_chat_status'] = $request->input('tawk_live_chat_status');
 
-        $data['stripe_public_key'] = $request->get('stripe_public_key');
-        $data['stripe_secret_key'] = $request->get('stripe_secret_key');
-        $data['stripe_status'] = $request->get('stripe_status');
+        $data['cookie_consent_message'] = $request->input('cookie_consent_message');
+        $data['cookie_consent_button_text'] = $request->input('cookie_consent_button_text');
+        $data['cookie_consent_text_color'] = $request->input('cookie_consent_text_color');
+        $data['cookie_consent_bg_color'] = $request->input('cookie_consent_bg_color');
+        $data['cookie_consent_button_text_color'] = $request->input('cookie_consent_button_text_color');
+        $data['cookie_consent_button_bg_color'] = $request->input('cookie_consent_button_bg_color');
+        $data['cookie_consent_status'] = $request->input('cookie_consent_status');
 
-        $data['razorpay_key_id'] = $request->get('razorpay_key_id');
-        $data['razorpay_key_secret'] = $request->get('razorpay_key_secret');
-        $data['razorpay_status'] = $request->get('razorpay_status');
+        $data['customer_property_option'] = $request->input('customer_property_option');
+        $data['layout_direction'] = $request->input('layout_direction');
 
-        $data['flutterwave_country'] = $request->get('flutterwave_country');
-        $data['flutterwave_public_key'] = $request->get('flutterwave_public_key');
-        $data['flutterwave_secret_key'] = $request->get('flutterwave_secret_key');
-        $data['flutterwave_status'] = $request->get('flutterwave_status');
+        $data['theme_color'] = $request->input('theme_color');
 
-        $data['aws_key_id'] = $request->get('aws_key_id');
-        $data['aws_secret_key'] = $request->get('aws_secret_key');
-        $data['aws_default_region'] = $request->get('aws_default_region');
-        $data['aws_bucket'] = $request->get('aws_bucket');
-        $data['aws_use_path_style_endpint'] = $request->get('aws_use_path_style_endpint');
-        $data['aws_status'] = $request->get('aws_status');
-
-        $data['mollie_api_key'] = $request->get('mollie_api_key');
-        $data['mollie_status'] = $request->get('mollie_status');
-
-        $data['social_details'] = $socialDataJson;
-        // dd($data);
+        $data['minimum_recharge_amount'] = $request->input('minimum_recharge_amount');
+        $data['minimum_withdraw_amount'] = $request->input('minimum_withdraw_amount');
+        $data['invite_bonus_amount'] = $request->input('invite_bonus_amount');
+        $data['recharge_bonus'] = $request->input('recharge_bonus');
+        $data['level_1_comm_pers'] = $request->input('level_1_comm_pers');
+        $data['level_2_comm_pers'] = $request->input('level_2_comm_pers');
         GeneralSetting::where('id',1)->update($data);
         return redirect()->back()->with('success', SUCCESS_ACTION);
     }

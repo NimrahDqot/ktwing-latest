@@ -63,13 +63,19 @@ class SubModuleController extends Controller
         $data = $request->only($manage_module->getFillable());
 
         $request->validate([
-            'name' => 'required|unique:sub_modules,name',
-            'key' => 'required|unique:sub_modules,key',
+            'name' => [
+                'required',
+                Rule::unique('sub_modules')->ignore($id), // Ignore unique validation for the current sub-module when updating
+            ],
+            'key' => [
+                'required',
+                Rule::unique('sub_modules')->ignore($id), // Ignore unique validation for the current sub-module when updating
+            ],
             'module_id' => 'required',
-        ]
-        ,[
+        ],[
             'module_id.required' => 'Please select module name.'
         ]);
+        
         $data['key'] =   str_replace(" ", "_", $request->key) ?? null;
         $data['name'] =   str_replace("_", " ", $request->name) ?? null;
         $manage_module->fill($data)->save();

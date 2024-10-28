@@ -78,7 +78,6 @@ class TaskController extends Controller
                     }
                 }
             }
-
             // If no valid submodule was found, create a relationship with null
             if (!$validSubModuleFound) {
                 ModuleSubmoduleRole::create([
@@ -106,12 +105,7 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
 {
-    // Check if the project mode is enabled
-    if (env('PROJECT_MODE') == 0) {
-        return redirect()->back()->with('error', env('PROJECT_NOTIFICATION'));
-    }
 
-    // Validate request
     $request->validate([
         'role_id' => [
             'required',
@@ -125,6 +119,7 @@ class TaskController extends Controller
 
     // Find the task to update
     $task = Task::findOrFail($id);
+
     $data = $request->only($task->getFillable());
     $data['module_id'] = json_encode($request['module_id']);
     $data['sub_module_id'] = json_encode($request['sub_module_id']) ?? null;

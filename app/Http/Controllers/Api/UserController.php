@@ -465,6 +465,10 @@ class UserController extends BaseController
               'mobile' => 'required|max:10|min:10',
               // 'user_type'=>'required',
           ]);
+          // Return validation errors if validation fails
+          if ($validator->fails()) {
+             return $this->sendError($validator->errors()->first());
+         }
             $user=array();
             $user_type = 1;
             if($user_type == 0){
@@ -640,11 +644,14 @@ class UserController extends BaseController
 
         try {
           $user_id = $request->user_id;
-          $profile_detail = User::where('id', $user_id)->select('id', 'refer_id', 'name', 'phone', 'email', 'dob', 'gender', 'image','referal_code','referral_count','current_level', 'status')->first();
+          $profile_detail = User::where('id', $user_id)->select('id', 'refer_id', 'name', 'phone', 'email', 'dob', 'gender', 'image','referal_code','referral_count','current_level', 'status','created_at')->first();
+          $profile_detail->usertype ="Participant";
           $app_refer_url = !empty($profile_detail->referal_code) ? env('APP_URL').'download/'.$profile_detail->referal_code : env('APP_URL').'/get-apk/KTW'.rand(0,10000);
-            // $profile_detail = Volunteer::where('id', $user_id)->where('status', "1")->select('id','name','email','role_id','image','phone','experience')->first();
           $profile_detail->current_level = ($profile_detail->current_level==0) ? 1 : $profile_detail->current_level;
           $level_name = DB ::table('level_rewards')->where('id',$profile_detail->current_level)->first()->level_name;
+          $rank = @DB ::table('level_rewards')->where('id',$profile_detail->current_level)->first()->rank;
+          $profile_detail->current_level = $rank;
+
             $profile_detail['user_refer_level']=!empty($level_name) ? $level_name : "No Level";
             $profile_detail['user_refer_share']='Welcome to KT Wing , Please download and installed App using following url :'.$app_refer_url.' for join with us';;
             $profile_detail['total_users_refered']=$profile_detail->referral_count;
@@ -692,15 +699,16 @@ class UserController extends BaseController
 
             $volunteer = User::find($user_id);
             if (!$volunteer) {
-                return $this->sendError('Volunteer not found.');
+                return $this->sendError('Participant not found.');
             }
 
-            $refer_id_count = User::where('refer_id', $user_id)->count();
-            $level_rewards = LevelReward::active()->select('id', 'level_name', 'min_points', 'max_points', 'min_users_for_level')->get();
+            $refer_id_count = User::where('users_refer_id', $user_id)->count();
+            $level_rewards = LevelReward::active()->select('id', 'level_name', 'min_points', 'max_points', 'min_users_for_level');
+            $data = $level_rewards->get();
 
             // Check if the count is less than or equal to min_users_for_level
             $current_level = null;
-            foreach ($level_rewards as $level_reward) {
+            foreach ($data as $level_reward) {
                 if ($refer_id_count <= $level_reward->min_users_for_level) {
                     $current_level = $level_reward; // Assign the current level based on the condition
                     break; // Exit the loop once the current level is found
@@ -711,14 +719,22 @@ class UserController extends BaseController
                 return $this->sendError('No appropriate level found for the current user count.');
             }
 
+            // $response = [
+            //     'level' => $level_rewards,
+            //     'current_level' => $current_level->level_name,
+            //     'current_users' => $refer_id_count,
+            //     'next_level' => isset($level_rewards[$level_rewards->search($current_level) + 1]) ? $level_rewards[$level_rewards->search($current_level) + 1]->level_name : null,
+            //     'user_needed_for_next_level' => isset($level_rewards[$level_rewards->search($current_level) + 1]) ? $level_rewards[$level_rewards->search($current_level) + 1]->min_users_for_level : null,
+            // ];
+            $level = $level_rewards->orderBy('id','desc')->get();
+
             $response = [
-                'level' => $level_rewards,
+                'level' => $level,
                 'current_level' => $current_level->level_name,
                 'current_users' => $refer_id_count,
-                'next_level' => isset($level_rewards[$level_rewards->search($current_level) + 1]) ? $level_rewards[$level_rewards->search($current_level) + 1]->level_name : null,
-                'user_needed_for_next_level' => isset($level_rewards[$level_rewards->search($current_level) + 1]) ? $level_rewards[$level_rewards->search($current_level) + 1]->min_users_for_level : null,
+                'next_level' => isset($data[$data->search($current_level) + 1]) ? $data[$data->search($current_level) + 1]->level_name : null,
+                'user_needed_for_next_level' => isset($data[$data->search($current_level) + 1]) ? $data[$data->search($current_level) + 1]->min_users_for_level : null,
             ];
-
             // Return success response
             return $this->sendResponse($response, 'Refer User list retrieved successfully.');
         } catch (\Exception $e) {
@@ -853,11 +869,21 @@ class UserController extends BaseController
         $apiresponse=array();
         $user_id = $request->user_id;
       // ############## PROFILE DATA #################
-        $profile_detail = User::where('id', $user_id)->select('id', 'refer_id', 'name', 'phone', 'email', 'dob', 'gender', 'image','referal_code','referral_count','current_level', 'status')->first();
+        $profile_detail = User::where('id', $user_id)->select('id', 'refer_id', 'name', 'phone', 'email', 'dob', 'gender', 'image','referal_code','referral_count','current_level', 'status','created_at')->first();
+        if(empty($profile_detail)){
+          return $this->sendError('User not found');
+
+        }
+
+
+        $profile_detail->usertype ="Participant";
+
         $app_refer_url = !empty($profile_detail->referal_code) ? env('APP_URL').'download/'.$profile_detail->referal_code : env('APP_URL').'/get-apk/KTW'.rand(0,10000);
         $profile_detail->current_level = ($profile_detail->current_level==0) ? 1 : $profile_detail->current_level;
         $level_name = DB ::table('level_rewards')->where('id',$profile_detail->current_level)->first()->level_name;
         $profile_detail['user_refer_level']=!empty($level_name) ? $level_name : "No Level";
+        $rank = @DB ::table('level_rewards')->where('id',$profile_detail->current_level)->first()->rank;
+        $profile_detail->current_level = $rank;
         $profile_detail['user_refer_share']='Welcome to KT Wing , Please download and installed App using following url :'.$app_refer_url.' for join with us';;
         $profile_detail['total_users_refered']=$profile_detail->referral_count;
         $apiresponse['profile']=$profile_detail;
@@ -865,7 +891,7 @@ class UserController extends BaseController
 
       // ############## OFFERS DATA #################
         $apiresponse['offers']=Banner::select('image')->where('type','offer')->orderBy('sort_by', 'asc')->pluck('image')
-    ->toArray();
+        ->toArray();
      // ############## OFFERS DATA #################
 
       // ############## IMPROVE SHARE DATA #################
@@ -874,7 +900,15 @@ class UserController extends BaseController
      // ############## IMPROVE SHARE DATA #################
 
       // ############## Team  DATA #################
-        $apiresponse['teams']=User::where('users_refer_id', $user_id)->select('id','name','image','created_at')->orderby('referral_count','DESC')->limit(10)->get();
+        $teams = User::where('users_refer_id', $user_id)->select('id','name','image','created_at','current_level')->orderby('referral_count','DESC')->limit(10)->get();
+        foreach ($teams as $key => $value) {
+          $rank= '';
+          $rank= @DB :: table('level_rewards')->where('id',$value->current_level)->first()->level_name;
+          $value->rank = !empty($rank) ? $rank :'Participates';
+        }
+
+        $apiresponse['teams']=$teams;
+
      // ############## Team  DATA #################
 
       // ############## Team  DATA #################
@@ -884,7 +918,24 @@ class UserController extends BaseController
         ->select('id','event_status', 'image','name','village_id','event_date','event_time')->limit(5)->get();
      // ############## Team  DATA #################
 
+     if($request->build_type=='IOS'){
+       $version = @DB::table('androidversion')->where('type_build',1)->first()->ios_version;
+     }else{
+       $version =@DB::table('androidversion')->where('type_build',0)->first()->android_version;
+     }
+      $device_version_code = !empty($request->device_version_code) ? $request->device_version_code : 18;
+      // dd($device_version_code , $version);
+       if($device_version_code < $version){
+         $apiresponse["version"]= (int)$version;
+         $apiresponse["popup_status"] = true;
+         $apiresponse["version_changes"]= 'New Version is : '.($version).' 1.Bug Resolved & UI Enhancement In case if you are facing any issue please download app from website.';
+         $apiresponse["app_download_url"]= 'https://ktwing.com';
+         // $apiresponse["app_download_url"]= 'https://ktwing.com/get-apk';
+       }else{
+         $apiresponse["version"]= (int)$version;
+         $apiresponse["popup_status"] = false;
 
+       }
       return $this->sendResponse($apiresponse, 'Retrieved successfully.');
       }
 }

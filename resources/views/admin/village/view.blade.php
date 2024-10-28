@@ -16,8 +16,8 @@
                     <thead>
                     <tr>
                         <th>{{ SERIAL }}</th>
-                        <th>Name</th>
-                        <th>District</th>
+                        <th>Village Name</th>
+                        <th>State To District</th>
                         <th>Population</th>
                         <th>Language</th>
                         <th>Contact Person</th>
@@ -27,12 +27,13 @@
                     </thead>
                     <tbody>
                         @php $i=0; @endphp
-
+ 
+                        
                         @foreach($village as $row)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ Str::ucfirst($row->name) }}</td>
-                            <td>{{ Str::ucfirst($row->district) }}</td>
+                            <td>{{ ($row->SubDistrictVillage->name) }}</td>
+                            <td> {{ ($row->StateInfo->name) }} --> {{ ($row->District->name) }} --> {{ ($row->SubDistrict->name) }}</td>
                             <td >{{ $row->population }}</td>
                             <td  class="text-capitalize">{{ $row->language }}</td>
                             <td>{{ $row->contact }}</td>

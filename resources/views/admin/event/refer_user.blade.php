@@ -1,12 +1,12 @@
 @extends('admin.app_admin')
 @section('admin_content')
-<h1 class="h3 mb-3 text-gray-800">{{$volunteer}} Users</h1>
+<h1 class="h3 mb-3 text-gray-800">{{$volunteer}} Participant</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="d-inline-flex align-items-center gap-3">
-                <h6 class="m-0 mr-3 font-weight-bold text-primary">Users</h6>
-                <span class="font-weight-bold text-success p-2 border rounded border-success"  >Total Users: {{ $users->total() }}</span>
+                <h6 class="m-0 mr-3 font-weight-bold text-primary">Participant</h6>
+                <span class="font-weight-bold text-success p-2 border rounded border-success"  >Total Participant: {{ $users->total() }}</span>
             </div>
             <div class="float-right d-inline">
                 <a href="{{ route('admin_volunteer_view') }}" class="btn btn-primary btn-sm"><i class="fa fa-reply" aria-hidden="true"></i>  Back</a>

@@ -7,7 +7,7 @@ use App\Models\Role;
 use App\Models\Village;
 use App\Models\Visitor;
 use App\Models\User;
-
+use App\Models\TeamCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -17,6 +17,8 @@ use Hash;
 use App\Mail\VolunteerNotificationMail;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Artisan;
 class VolunteerController extends Controller
 {
     public function __construct() {
@@ -40,10 +42,10 @@ class VolunteerController extends Controller
         $per_page = $request->input('per_page', 10); // Default to 5 if not specified
         $query->orderBy($sortBy, $sortDirection);
            if ($per_page === 'all') {
-            // Fetch all records if 'all' is selected
+
             $volunteer = $query->paginate($query->count());
         } else {
-            // Paginate results otherwise
+
             $volunteer = $query->paginate($per_page);
         }
         return view('admin.volunteer.view', compact('volunteer'));
@@ -51,8 +53,9 @@ class VolunteerController extends Controller
 
     public function create() {
         $roles = Role::active()->orderBy('created_at','desc')->get();
-        $villages = Village::active()->orderBy('created_at','desc')->get();
-        return view('admin.volunteer.create', compact('roles','villages'));
+        $villages = Village::active()->orderBy('created_at','desc')->with('SubDistrictVillage')->get();
+        $team_categories = TeamCategory::orderBy('created_at', 'desc')->get();
+        return view('admin.volunteer.create', compact('roles','villages','team_categories'));
     }
 
     public function store(Request $request) {
@@ -67,8 +70,13 @@ class VolunteerController extends Controller
         $data['role_id'] = $role->id;
         $request->validate([
             'name' => 'required',
+            'team_category_id' => 'required|numeric',
             'phone' => 'required|digits:10|unique:volunteers,phone',
+            "father_name" => 'nullable|String',
+            "address" => 'nullable|String',
+            "designation" => 'nullable|String',
             'experience' => 'required',
+            'blood_group' => 'nullable|max:10',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image validation
             'password' => 'required|confirmed|min:8',
             // 'role_id' => 'required',
@@ -92,7 +100,31 @@ class VolunteerController extends Controller
             unset($data['image']);
             $data['image'] = $final_name;
         }
+        // if (is_array($request->social_icon) && is_array($request->social_url)) {
+        //     foreach ($request->social_icon as $index => $url) {
+        //         // Combine FAQ question and answer into an array
+        //         $metaData['social_link'][] = [
+        //             'social_icon' => $url,
+        //             'social_url' => $request->social_url[$index] ?? '' // Default to empty string if no corresponding answer
+        //         ];
+        //     }
+        // }
+        if (is_array($request->social_icon) && is_array($request->social_url)) {
+            foreach ($request->social_icon as $index => $icon) {
+                $url = $request->social_url[$index] ?? '';
+                // Only add the social link if both icon and URL are provided
+                if (!empty($icon) && !empty($request->social_url[$index])) {
+                    $metaData['social_link'][] = [
+                        'social_icon' => $icon,
+                        'social_url' => $url,
+                    ];
+                }
+            }
+        }
+
         $data['village_id'] = implode(',', $request->village_id);
+        $data['social_link'] = isset($metaData) ? json_encode($metaData) : null;
+        // dd($data);
         $volunteer->fill($data)->save();
         if($volunteer){
 
@@ -112,9 +144,11 @@ class VolunteerController extends Controller
 
     public function edit($id) {
         $volunteer = Volunteer::findOrFail($id);
-        $villages = Village::orderBy('created_at','desc')->get();
+        $villages = Village::active()->orderBy('created_at','desc')->with('SubDistrictVillage')->get();
         $roles = Role::orderBy('created_at','desc')->get();
-        return view('admin.volunteer.edit', compact('volunteer','roles','villages'));
+        $team_categories = TeamCategory::orderBy('created_at', 'desc')->get();
+        $social_links  = json_decode($volunteer->social_link);
+        return view('admin.volunteer.edit', compact('volunteer','roles','villages','team_categories','social_links'));
     }
 
     public function update(Request $request, $id) {
@@ -132,7 +166,8 @@ class VolunteerController extends Controller
             'experience' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image validation
             'password' => 'nullable|confirmed|min:8',
-            'role_id' => 'required',
+            'blood_group' => 'nullable|max:10',
+
             'village_id' => 'required',
             'phone' => [
                 'required',
@@ -155,11 +190,34 @@ class VolunteerController extends Controller
 
             $data['image'] = $final_name; // Update with new image name
         }
+        // if (is_array($request->social_icon) && is_array($request->social_url)) {
+        //     foreach ($request->social_icon as $index => $url) {
+        //         // Combine FAQ question and answer into an array
+        //         $metaData['social_link'][] = [
+        //             'social_icon' => $url,
+        //             'social_url' => $request->social_url[$index] ?? '' // Default to empty string if no corresponding answer
+        //         ];
+        //     }
+        // }
+        // dd($request->all());
+        if (is_array($request->social_icon) && is_array($request->social_url)) {
+            foreach ($request->social_icon as $index => $icon) {
+                $url = $request->social_url[$index] ?? '';
+                // Only add the social link if both icon and URL are provided
+                if (!empty($icon) && !empty($request->social_url[$index])) {
+                    $metaData['social_link'][] = [
+                        'social_icon' => $icon,
+                        'social_url' => $url,
+                    ];
+                }
+            }
+        }
         if($request->filled('password')) {
             $data['password'] = Hash::make($request->password); // Hash the password
         } else {
             unset($data['password']); // Do not update password if it's not provided
         }
+        $data['social_link'] = isset($metaData) ? json_encode($metaData) : null;
         $data['village_id'] = implode(',', $request->village_id);
         $volunteer->fill($data)->save();
         return redirect()->route('admin_volunteer_view')->with('success', SUCCESS_ACTION);
@@ -309,5 +367,84 @@ class VolunteerController extends Controller
         $users = User::with('Volunteer_info','user_info','level_info')->paginate(10);
         return view('admin.users.user_list',compact('users'));
     }
-}
 
+    // public function volunteer_id_card_download($id){
+    //     // $volunteer = Volunteer::findOrFail($id);
+    //     // return view('admin.volunteer.id_card',compact('volunteer'));
+    //     $volunteer = Volunteer::findOrFail($id);
+
+    //     // Load the view and pass the volunteer data to it
+    //     $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
+
+    //     // Set the download filename
+    //     $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+
+    //     // Return the generated PDF as a download
+    //     return $pdf->download($filename);
+    // }
+
+    // public function volunteer_id_card_download($id)
+    // {
+    //     // Retrieve the volunteer data
+    //     $volunteer = Volunteer::findOrFail($id);
+
+    //     // Load the view and pass the volunteer data to it
+    //     $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
+
+    //     // Set the filename for display purposes
+    //     $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+
+    //     // Stream the generated PDF for in-browser viewing
+    //     return $pdf->stream($filename);
+    // }
+
+    public function volunteer_id_card_download($id)
+    {
+        // Extend the execution time to 300 seconds (5 minutes) or any preferred duration
+        set_time_limit(300);
+
+        $volunteer = Volunteer::where('id', $id)
+        ->select('image', 'id', 'name', 'designation', 'father_name', 'phone', 'email', 'address')
+        ->firstOrFail();
+        $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
+        $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+
+        return $pdf->stream($filename);
+    }
+    public function clearAllCaches()
+    {
+        try {
+            // Clear application cache
+            Artisan::call('cache:clear');
+            echo "Application cache cleared.<br>";
+
+            // Clear route cache
+            Artisan::call('route:clear');
+            echo "Route cache cleared.<br>";
+
+            // Clear view cache
+            Artisan::call('view:clear');
+            echo "View cache cleared.<br>";
+
+            // Clear config cache
+            Artisan::call('config:clear');
+            echo "Config cache cleared.<br>";
+
+            // Optional: Re-optimize the application by caching routes and config
+            Artisan::call('config:cache');
+            echo "Config cached.<br>";
+
+            Artisan::call('route:cache');
+            echo "Route cached.<br>";
+
+            Artisan::call('view:cache');
+            echo "View cached.<br>";
+
+            return "All caches cleared and optimized successfully!";
+        } catch (\Exception $e) {
+            dd($e);
+            return "Error clearing caches: " . $e->getMessage();
+        }
+    }
+
+}

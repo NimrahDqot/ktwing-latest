@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Banner extends Model
 {
     protected $fillable = [
-        'title', 'image',	'type',	'sort_by'
+        'title', 'image',	'type',	'sort_by','offer_amount'
     ];
 
     public function getImageAttribute() {

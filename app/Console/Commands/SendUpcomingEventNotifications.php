@@ -65,7 +65,7 @@ class SendUpcomingEventNotifications extends Command
 
             // Fetch the assigned volunteers
             $assignedVolunteers = Volunteer::whereIn('id', $volunteerIds)->get();
-            Log::info('Upcoming assignedVolunteers for tomorrow:', ['assignedVolunteers' => json_encode($assignedVolunteers, JSON_PRETTY_PRINT)]);
+            Log::info('Upcoming assigned Team for tomorrow:', ['assignedVolunteers' => json_encode($assignedVolunteers, JSON_PRETTY_PRINT)]);
 
             foreach ($assignedVolunteers as $volunteer) {
                 $notification = [

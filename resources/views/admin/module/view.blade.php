@@ -28,9 +28,9 @@
                             <td>{{ $row->key }}</td>
                             <td>{{ $row->name }}</td>
                             <td>
-                                @if ($row->id >= 17)
+                           
                                     <a href="{{ route('admin_manage_module_edit',$row->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <a href="{{ route('admin_manage_module_delete',$row->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('{{ ARE_YOU_SURE }}');"><i class="fas fa-trash-alt"></i></a>
+                                    @if ($row->id >= 17)    <a href="{{ route('admin_manage_module_delete',$row->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('{{ ARE_YOU_SURE }}');"><i class="fas fa-trash-alt"></i></a>
                                @endif
                             </td>
                         </tr>

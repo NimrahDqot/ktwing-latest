@@ -1,6 +1,6 @@
 @extends('admin.app_admin')
 @section('admin_content')
-    <h1 class="h3 mb-3 text-gray-800">Edit Module</h1>
+    <h1 class="h3 mb-3 text-gray-800">Edit Participant</h1>
 
         <form action="{{ route('admin_manage_module_update',$manage_module->id) }}" method="post">
             @csrf

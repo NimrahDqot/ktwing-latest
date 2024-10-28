@@ -15,8 +15,10 @@
                     <thead>
                     <tr>
                         <th>{{ SERIAL }}</th>
-                        <th>{{ TITLE }}</th>
                         <th>Image</th>
+                        <th>{{ TITLE }}</th>
+
+                        <th>Type</th>
                         <th>{{ ACTION }}</th>
                     </tr>
                     </thead>
@@ -25,10 +27,11 @@
                         @foreach($banner as $row)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $row->title }}</td>
                             <td>
-                                <img src="{{ asset($row->image) }}" style="cursor: pointer;" onclick="zoomImage(this)" class="w_50">
+                              <img src="{{ asset($row->image) }}" style="cursor: pointer;" onclick="zoomImage(this)" class="w_50">
                             </td>
+                            <td>{{ $row->title }}</td>
+                            <td>{{ ucfirst($row->type) }} <b>{{$row->offer_amount}}</b> </td>
                             <td>
                                 <a href="{{ route('admin_banner_edit',$row->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                 <a href="{{ route('admin_banner_delete',$row->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('{{ ARE_YOU_SURE }}');"><i class="fas fa-trash-alt"></i></a>

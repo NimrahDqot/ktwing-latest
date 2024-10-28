@@ -1,6 +1,6 @@
 @extends('admin.app_admin')
 @section('admin_content')
-    <h1 class="h3 mb-3 text-gray-800">App Visitors</h1>
+    <h1 class="h3 mb-3 text-gray-800">App Participant</h1>
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
@@ -9,7 +9,7 @@
 
                         <div class="me-sm-3 ml-2">
                             <select name="volunteer" class="form-control text-capitalize" id="statusFilter">
-                                <option selected disabled>--Select Volunteer--</option>
+                                <option selected disabled>--Select Team--</option>
                                 @foreach($volunteers as $volunteer)
                                 <option value="{{$volunteer->id}}"  {{ request('volunteer') == $volunteer->id ? 'selected' : '' }}> {{$volunteer->name}}</option>
                                 @endforeach
@@ -57,7 +57,7 @@
     </div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 mt-2 font-weight-bold text-primary">Visitors</h6>
+            <h6 class="m-0 mt-2 font-weight-bold text-primary">Participant</h6>
         </div>
 
         <div class="card-body">
@@ -66,7 +66,7 @@
                     <thead>
                     <tr>
                         <th>{{ SERIAL }}</th>
-                        <th>Visitor</th>
+                        <th>Participant</th>
                         <th>Other Details</th>
                         <th>Review</th>
                         <th>Audio</th>
@@ -98,16 +98,26 @@
                                 </p>
                             </td>
                             <td class="text-capitalize">
-                                @if($row->volunteers)
-                                <b> Volunteer:</b>
-                                {{ isset($row->volunteers->name) ? $row->volunteers->name : 'No Volunteer' }} <br>
+                               @if($row->volunteers)
+                                <b> Team:</b>
+                                {{ isset($row->volunteers->name) ? $row->volunteers->name : 'No Team' }} <br>
                                 @endif
-                                <b> Role:</b>
+
+                                @if($row->role)
+                                 <b> Role:</b>
                                 {{ $row->role }} <br>
+                                @endif
+
+                                @if($row->bio)
                                 <b> Bio:</b>
                                 {{ $row->bio }} <br>
-                                <b> Grade:</b>
+                                @endif
+
+                                @if($row->grade)
+                              <b> Grade:</b>
                                 {{ $row->grade }}
+                                @endif
+
                             </td>
                             <td class="text-capitalize" width="20%">
                                 <span class="review-text">{{ Str::limit($row->review, 20) }}</span> <!-- Limiting to 50 characters -->

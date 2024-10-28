@@ -38,12 +38,12 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin_role_edit',$row->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                {{-- @if(!$used_role_ids->contains($row->id))
+                                {{-- <a href="{{ route('admin_role_edit',$row->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                @if(!$used_role_ids->contains($row->id))
                                 <a href="{{ route('admin_role_delete', $row->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('{{ ARE_YOU_SURE }}');">
                                     <i class="fas fa-trash-alt"></i>
-                                </a> --}}
-                                {{-- @endif --}}
+                                </a>
+                                @endif --}}
 
                             </td>
                         </tr>

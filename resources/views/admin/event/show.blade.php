@@ -78,7 +78,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Uploaded Photos by Volunteer</td>
+                                <td>Uploaded Photos by Team</td>
                                 <td>
                                     <div class="row">
                                         @foreach ($photoRequests as $photoRequest)
@@ -103,7 +103,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Uploaded Audios by Volunteer</td>
+                                <td>Uploaded Audios by Team</td>
                                 <td>
                                     <div class="row">
                                         @foreach ($audioRequests as $audioRequest)
@@ -131,7 +131,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Uploaded Videos by Volunteer</td>
+                                <td>Uploaded Videos by Team</td>
                                 <td>
                                     <div class="row">
                                         @foreach ($videoRequests as $videoRequest)

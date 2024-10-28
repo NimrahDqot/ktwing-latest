@@ -77,7 +77,7 @@
                         <th>Category Name</th>
                         <th>Event Details</th>
                         <th>Status</th>
-                        <th>Assign to volunteer</th>
+                        <th>Assign to Team</th>
                         <th>Assign to Attendee</th>
 
                         <th>Event status</th>
@@ -127,16 +127,16 @@
                                         <span class="text-capitalize">{{ $volunteer->name }}</span>{{ !$loop->last ? ', ' : '' }}
                                     @endforeach
                                 @else
-                                    <span class="text-secondary">No volunteers assigned</span>
+                                    <span class="text-secondary">No teams assigned</span>
                                 @endif
                                 <p class="pt-2">
-                                    <button class="btn btn-warning" onclick="openModal({{ $row->id }}, {{ json_encode($volunteerIds) }})">Assign to volunteer</button>
+                                    <button class="btn btn-warning" onclick="openModal({{ $row->id }}, {{ json_encode($volunteerIds) }})">Assign to teams</button>
                                 </p>
                             </td>
                             <td>
                                 @php
                                     $attendeeIds = explode(',', $row->attendees_id); // Assuming the IDs are stored as CSV
-                                    $assignedAttendee = $attendees->whereIn('id', $attendeeIds); // Fetch volunteer names based on IDs
+                                    $assignedAttendee = $attendees->whereIn('id', $attendeeIds); // Fetch teams names based on IDs
                                 @endphp
                                 @if($assignedAttendee->count() > 0)
                                     @foreach($assignedAttendee as $attendee)
@@ -150,7 +150,7 @@
                                 </p>
                             </td>
                             <td>
-                                <select name="attendees_status" class="form-control" onchange="changeStatus({{ $row->id }}, this.value)">
+                                <select name="attendees_status" class="form-control" onchange="changeEventStatus({{ $row->id }}, this.value)">
                                     <option value="Completed" {{ $row->event_status == 'Completed' ? 'selected' : '' }}>Completed</option>
                                     <option value="Upcoming" {{ $row->event_status == 'Upcoming' ? 'selected' : '' }}>Upcoming</option>
                                     <option value="Ongoing" {{ $row->event_status == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
@@ -187,14 +187,14 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="assignVolunteerLabel">Assign Volunteer</h5>
+                                <h5 class="modal-title" id="assignVolunteerLabel">Assign Teams</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
                             </div>
                             <div class="modal-body">
                                 <form id="assignVolunteerForm">
-                                        <select name="volunteer_id[]" id="volunteerSelect" data-placeholder="-Select Volunteer-" multiple class="form-control my-select2-class" style="width: 100%">
+                                        <select name="volunteer_id[]" id="volunteerSelect" data-placeholder="-Select Teams-" multiple class="form-control my-select2-class" style="width: 100%">
                                         @foreach($volunteers as $volunteer)
                                             <option value="{{ $volunteer->id }}">{{ $volunteer->name }}</option>
                                         @endforeach
@@ -338,7 +338,7 @@
         // Clear previous selections
         $('#attendeeSelect').val([]).trigger('change'); // Use 'change' for Select2
 
-        // Set the selected volunteers for this row
+        // Set the selected teams for this row
         if (selectedAttendee && selectedAttendee.length > 0) {
             $('#attendeeSelect').val(selectedAttendee).trigger('change'); // Use 'change' for Select2
         }
@@ -364,7 +364,7 @@ function submitVolunteer() {
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                toastr.success('Volunteers assigned successfully');
+                toastr.success('Teams assigned successfully');
 
                 // Update the specific <td> with the new volunteer names
                 var updatedVolunteersHtml = '';
@@ -393,12 +393,12 @@ function submitVolunteer() {
             },
             error: function(error) {
 
-                toastr.error(error,'Error occurred while assigning volunteers');
+                toastr.error(error,'Error occurred while assigning Team');
             }
         });
 
     } else {
-        toastr.warning('Please select at least one volunteer');
+        toastr.warning('Please select at least one Team');
 
         //   toastr.warning('Please select at least one volunteer');
     }
@@ -406,7 +406,7 @@ function submitVolunteer() {
 
 
 function submitAttendee() {
-    // Get the selected volunteers from the form
+    // Get the selected Team from the form
     var selectedAttendee = $('#attendeeSelect').val();
     var modal = document.getElementById('assignattendeeModal');
     var rowId = modal.dataset.rowId;
@@ -492,7 +492,7 @@ function submitAttendee() {
             }
         });
     }
-    function changeStatus(id, status) {
+    function changeEventStatus(id, status) {
     $.ajax({
         type: "GET",
         url: "{{ url('/update-event-status') }}/" + id + "/" + status,

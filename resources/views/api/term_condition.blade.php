@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
     <title>KT Wing - Privacy Policy & Terms</title>
     <style>
         body {
@@ -70,13 +73,13 @@
 </head>
 
 <body>
-    <div class="header">
+    <!-- <div class="header">
         <h1>KT Wing Legal Information</h1>
-    </div>
+    </div> -->
 
-    <div class="tab-container">
+    <!-- <div class="tab-container">
         <button class="tab" onclick="showContent('terms')"> {{ $termItem->name }}</button>
-    </div>
+    </div> -->
 
     <div class="content" id="privacy-content">
         <h2>{{ $termItem->name }}</h2>

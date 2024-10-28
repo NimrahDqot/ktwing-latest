@@ -19,7 +19,7 @@
                         <tr>
                             <th>#</th>
                             <th>Event Name</th>
-                            <th>Assign Volunteers</th>
+                            <th>Assign Teams</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -39,7 +39,7 @@
                                         <span>{{ $volunteer->name }}</span>{{ !$loop->last ? ', ' : '' }}
                                     @endforeach
                                 @else
-                                    <span class="text-secondary">No volunteers</span>
+                                    <span class="text-secondary">No teams</span>
                                 @endif
                             </td>
                             <td>

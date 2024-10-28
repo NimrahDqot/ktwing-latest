@@ -1,6 +1,6 @@
 @extends('admin.app_admin')
 @section('admin_content')
-    <h1 class="h3 mb-3 text-gray-800">View Volunteer</h1>
+    <h1 class="h3 mb-3 text-gray-800">View Teams</h1>
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
@@ -8,7 +8,7 @@
                     <form class="d-flex flex-wrap align-items-left" id="search" action="{{ route('admin_volunteer_view') }}"  method="GET">
                         <div class="me-sm-3 ml-2">
                             <select name="status" class="form-control" id="statusFilter">
-                                <option selected disabled>--Volunteer status--</option>
+                                <option selected disabled>--Team status--</option>
                                 <option value="1"  {{ request('status') == '1' ? 'selected' : '' }}>Active</option>
                                 <option value="0"  {{ request('status') == '0' ? 'selected' : '' }}>InActive</option>
                                 <option value="0"  {{ request('status') == '2' ? 'selected' : '' }}>Rejected</option>
@@ -16,7 +16,7 @@
                         </div>
 
                         <div class="me-sm-3 ml-2">
-                            <input type="text" class="form-control my-1 my-lg-0" name="name" value="{{ request('name') }}" id="nameFilter" placeholder="Volunteer Name...">
+                            <input type="text" class="form-control my-1 my-lg-0" name="name" value="{{ request('name') }}" id="nameFilter" placeholder="Team Name...">
                         </div>
 
                     <div class="me-sm-3 ml-2">
@@ -54,7 +54,7 @@
     </div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 mt-2 font-weight-bold text-primary">Volunteer</h6>
+            <h6 class="m-0 mt-2 font-weight-bold text-primary">Team</h6>
             <div class="float-right d-inline">
                 <a href="{{ route('admin_volunteer_create') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i>
                     {{ ADD_NEW }}</a>
@@ -70,7 +70,6 @@
                             <th>Name</th>
                             <th>Contact Details</th>
                             <th>Role</th>
-                            <th>Villages</th>
                             <th>Status</th>
                             <th>{{ ACTION }}</th>
                         </tr>
@@ -83,33 +82,25 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td >
                                     <img src="{{ asset($row->image) }}" onclick="zoomImage(this)" class="w_50">
-
                                 </td>
                                 <td class="text-capitalize">
                                     {{ $row->name }} <br>
                                     <b>{{ $row->referal_code }}</b> <br>
-                                    @if($row->status == '0')
+                                    {{-- @if($row->status == '0')
                                     <span class="badge badge-pill badge-warning mt-2">Pending</span>
                                 @elseif($row->status == '1')
                                     <span class="badge badge-pill badge-success mt-2">Active</span>
                                 @elseif($row->status == '2')
                                     <span class="badge badge-pill badge-danger mt-2">Reject</span>
-                                @endif</td>
+                                @endif --}}
+                                <span class="badge badge-pill {{ $row->status === '0' ? 'badge-warning' : ($row->status === '1' ? 'badge-success' : 'badge-danger') }} mt-2">
+                                    {{ $row->status === '0' ? 'Pending' : ($row->status === '1' ? 'Active' : 'Reject') }}
+                                </span>
+                            </td>
                                 <td>Experience: {{ $row->experience }} <br> {{ $row->email }} <br> {{ $row->phone }}
                                 </td>
                                 <td class="text-capitalize">
-                                    {{ $row->role_id ? $row->Role->name : 'Not found' }}
-                                </td>
-                                <td class="text-capitalize">
-                                    @if ($row->villages()->isNotEmpty())
-                                        @foreach ($row->villages() as $village)
-                                            {{ $village->name }}@if (!$loop->last)
-                                                ,
-                                            @endif <!-- Display names with commas -->
-                                        @endforeach
-                                    @else
-                                        None
-                                    @endif
+                                    <td class="text-capitalize">{{ optional($row->Role)->name ?? 'Not found' }}</td>
                                 </td>
 
                                 <td>
@@ -158,21 +149,21 @@
                                     <a href="{{ route('admin_volunteer_delete', $row->id) }}" class="btn btn-danger btn-sm"
                                         onClick="return confirm('{{ ARE_YOU_SURE }}');"><i
                                             class="fas fa-trash-alt"></i></a>
-                                    <button type="button" class="btn btn-warning btn-sm"
-                                        onclick="openNotification({{ $row->id }})" data-toggle="modal"
-                                        data-target="#exampleModal">
-                                        <i class="fas fa-bell"></i>
-                                    </button>
+                                    <button type="button" class="btn btn-warning btn-sm" onclick="openNotification({{ $row->id }})" data-toggle="modal"  data-target="#exampleModal"><i class="fas fa-bell"></i></button>
+
+                                    <a href="{{ route('volunteer_id_card_download',$row->id) }}" class="btn btn-info btn-sm" target="_blank"><i class="fa fa-download"></i></a>
+
                                     <br>
                                    <?php $refer_count = App\Models\Visitor::where('volunteer_id', $row->id)->count();  ?>
                                     @if(isset($row->referral_count) &&  $row->referral_count > 0)
-                                        <a href="{{ route('refer_user',$row->id) }}" class="btn btn-info btn-sm mt-2">Refer Users</a>
+                                        <a href="{{ route('refer_user',$row->id) }}" class="btn btn-info btn-sm mt-2">Refered Participates</a>
                                     @endif
 
                                     @if(isset($refer_count) &&  $refer_count > 0)
 
-                                    <a href="{{ route('refer_visitor',$row->id) }}" class="btn btn-sm  mt-2" style=" background-color: #FF7000;border-color:#FF7000;color:#fff">Refer Visitors</a>
+                                    <a href="{{ route('refer_visitor',$row->id) }}" class="btn btn-sm  mt-2" style=" background-color: #FF7000;border-color:#FF7000;color:#fff">Participates Data</a>
                                     @endif
+
                                 </td>
                             </tr>
                         @endforeach

@@ -14,7 +14,7 @@ class Volunteer extends Model
     use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
 
     protected $fillable = [
-    'name', 'email', 'password', 'role_id', 'status',  'image', 'phone', 'experience','rejection_reason','village_id','fcm_token','device_id','current_level'
+    'name', 'email', 'password', 'role_id', 'status',  'image', 'phone', 'experience','rejection_reason','village_id','fcm_token','device_id','current_level','blood_group','team_category_id','social_link','father_name','address','designation'
     ];
 
 

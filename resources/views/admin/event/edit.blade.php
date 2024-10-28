@@ -62,7 +62,8 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="">Event Duration</label>
-                            <input type="text" name="event_duration" class="form-control"  value="{{ old('event_duration',$event->event_duration) }}">
+                            <span class="text-danger">(In hourse)</span>
+                            <input type="number" name="event_duration" class="form-control"  value="{{ old('event_duration',$event->event_duration) }}">
                         </div>
                     </div>
                     <div class="col-md-4">

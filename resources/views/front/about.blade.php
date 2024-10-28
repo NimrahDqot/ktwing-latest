@@ -17,7 +17,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				{ $about_data->detail) !!}
+				{!! $about_data->detail !!}
 			</div>
 		</div>
 	</div>

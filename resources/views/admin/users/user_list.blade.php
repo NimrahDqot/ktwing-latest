@@ -1,10 +1,10 @@
 @extends('admin.app_admin')
 @section('admin_content')
-    <h1 class="h3 mb-3 text-gray-800">User List</h1>
+    <h1 class="h3 mb-3 text-gray-800">Participant List</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 mt-2 font-weight-bold text-primary">Users</h6>
+            <!-- <h6 class="m-0 mt-2 font-weight-bold text-primary">Participant</h6> -->
         </div>
 
         <div class="card-body">
@@ -46,7 +46,7 @@
                                         @else
                                         <?php $name = $row->user_info->name; ?>
                                         @endif
-                                        <b>Refer User: </b>
+                                        <b>Refer Participant: </b>
                                         {{ $name}} <br>
                                         @endif
 

@@ -43,6 +43,14 @@ $roleId = session('admin_role_id'); // Retrieve the role_id from the session
     @include('admin.app_scripts')
 
 </head>
+<style>
+    span.select2-selection.select2-selection--single{
+        height: 45%;
+        align-items: center;
+        display: flex;
+        border-color: #d1d3e2;
+    }
+    </style>
 <body id="page-top">
 
 <!-- Page Wrapper -->
@@ -142,19 +150,6 @@ $roleId = session('admin_role_id'); // Retrieve the role_id from the session
         @endif
     </li>
 @endforeach
-<li class="nav-item {{ $route == 'admin_village_view'||  $route =='admin_district_view'||  $route =='admin_vidhanasabha_view' ? 'active' : '' }}">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSetting" aria-expanded="true" aria-controls="collapseSetting">
-        <i class="fas fa-folder"></i>
-        <span>Master</span>
-    </a>
-    <div id="collapseSetting" class="collapse {{ $route == 'admin_village_view'||$route == 'admin_district_view'||$route == 'admin_vidhanasabha_view' ? 'show' : '' }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('admin_district_view') }}">District</a>
-            <a class="collapse-item" href="{{ route('admin_vidhanasabha_view') }}">Vidhana Sabha</a>
-            <a class="collapse-item" href="{{ route('admin_village_view') }}">Village</a>
-        </div>
-    </div>
-</li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">

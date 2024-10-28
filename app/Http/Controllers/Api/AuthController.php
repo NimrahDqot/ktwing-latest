@@ -50,7 +50,7 @@ class AuthController extends BaseController
         return response($content);
     }
 
-    public function term_condition()
+    public function about_us()
     {
         // Retrieve the first PrivacyItem
         $privacyItem = PrivacyItem::select('name', 'detail')->first();
@@ -59,12 +59,31 @@ class AuthController extends BaseController
         $termItem = TermItem::select('name', 'detail')->first();
 
         // Prepare the content to be passed to the view
-        $content = view('api.term_condition', [
+        $content = view('api.about_us', [
             'privacyItem' => $privacyItem,
             'termItem' => $termItem,
         ])->render();
 
         return response($content);
     }
+    public function term_condition()
+      {
+          // Retrieve the first PrivacyItem
+          $privacyItem = PrivacyItem::select('name', 'detail')->first();
 
+          // Retrieve the first TermItem
+          $termItem = TermItem::select('name', 'detail')->first();
+
+          // Prepare the content to be passed to the view
+          $content = view('api.term_condition', [
+              'privacyItem' => $privacyItem,
+              'termItem' => $termItem,
+          ])->render();
+
+          return response($content);
+      }
+
+      public function delete_account(){
+          return view('admin.delete_account');
+    }
 }

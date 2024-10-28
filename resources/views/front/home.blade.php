@@ -43,7 +43,7 @@
 		<div class="loader"></div>
 	</div>
 
-	<!--{{ ADD_NEW }}TO TOP SECTION -->
+	<!-- BACK TO TOP SECTION -->
 	<a href="#0" class="cd-top cd-is-visible cd-fade-out">Top</a>
 
 	<!-- HEADER -->
@@ -53,16 +53,8 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-7 col-md-6">
-						<!-- <p><em>Urgent : Awesome Template for Charity & Non-profit Site</em></p> -->
 					</div>
-					<!-- <div class="col-sm-5 col-md-6">
-						<div class="sosmed-icon pull-right">
-							<a href="#"><i class="fa fa-facebook"></i></a>
-							<a href="#"><i class="fa fa-twitter"></i></a>
-							<a href="#"><i class="fa fa-instagram"></i></a>
-							<a href="#"><i class="fa fa-pinterest"></i></a>
-						</div>
-					</div> -->
+
 				</div>
 			</div>
 		</div>
@@ -110,67 +102,7 @@
 						<img src="{{asset("ktwing_style/images/logo.png")}}" alt="" /> <span>KT WING</span>
 
 					</a>
-
-			        <!-- <div class="collapse navbar-collapse" id="navbarNavDropdown">
-			            <ul class="navbar-nav">
-			                <li class="nav-item dropdown">
-			                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						          HOME
-						        </a>
-			                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-			                    	<a class="dropdown-item" href="index-2.html">Home 1</a>
-	          						<a class="dropdown-item" href="index-3.html">Home 2</a>
-	          						<a class="dropdown-item" href="index-4.html">Home 3</a>
-	          						<a class="dropdown-item" href="index-5.html">Home 4 - Onepage</a>
-							    </div>
-			                </li>
-			                <li class="nav-item dropdown">
-			                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						          ABOUT
-						        </a>
-			                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-			                    	<a class="dropdown-item" href="about.html">About Us</a>
-	          						<a class="dropdown-item" href="faq.html">FAQ</a>
-	          						<a class="dropdown-item" href="our-team.html">Our Team</a>
-							    </div>
-			                </li>
-			                <li class="nav-item dropdown">
-			                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						          CAUSES
-						        </a>
-			                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-			                    	<a class="dropdown-item" href="cause.html">Causes</a>
-	          						<a class="dropdown-item" href="cause-single.html">Single Causes</a>
-							    </div>
-			                </li>
-			                <li class="nav-item dropdown">
-			                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						          PAGES
-						        </a>
-			                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-			                    	<a class="dropdown-item" href="404.html">404 Page</a>
-	          						<a class="dropdown-item" href="gallery.html">Gallery</a>
-	          						<a class="dropdown-item" href="testimonials.html">Testimonials</a>
-	          						<a class="dropdown-item" href="news-grid.html">News Grid</a>
-	          						<a class="dropdown-item" href="news-sidebar.html">News Sidebar</a>
-	          						<a class="dropdown-item" href="news-detail.html">News Detail</a>
-							    </div>
-			                </li>
-			                <li class="nav-item dropdown">
-			                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						          EVENTS
-						        </a>
-			                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-			                    	<a class="dropdown-item" href="events.html">Events</a>
-	          						<a class="dropdown-item" href="events-single.html">Events Detail</a>
-							    </div>
-			                </li>
-			                <li class="nav-item">
-			                    <a class="nav-link" href="contact.html">CONTACT US</a>
-			                </li>
-			            </ul>
-			        </div> -->
-			    </nav>
+          </nav>
 
 			</div>
 		</div>
@@ -181,7 +113,7 @@
 	<div id="oc-fullslider" class="banner owl-carousel">
         <div class="owl-slide">
         	<div class="item">
-	            <img src="{{asset("ktwing_style/images/home01.jpg")}}" alt="Slider">
+	            <img src="{{asset("ktwing_style/images/home01.png")}}" alt="Slider">
 	            <div class="slider-pos">
 		            <div class="container">
 		            	<div class="wrap-caption"></div>
@@ -191,7 +123,7 @@
 		</div>
         <div class="owl-slide">
         	<div class="item">
-	            <img src="{{asset("ktwing_style/images/home01.jpg")}}" alt="Slider">
+	            <img src="{{asset("ktwing_style/images/home01.png")}}" alt="Slider">
 	            <div class="slider-pos">
 	            <div class="container">
 	            	<div class="wrap-caption center">
@@ -205,7 +137,7 @@
         </div>
         <div class="owl-slide">
         	<div class="item">
-	            <img src="{{asset("ktwing_style/images/home01.jpg")}}" alt="Slider">
+	            <img src="{{asset("ktwing_style/images/home01.png")}}" alt="Slider">
 	            <div class="slider-pos">
 	            <div class="container">
 	            	<div class="wrap-caption right">
