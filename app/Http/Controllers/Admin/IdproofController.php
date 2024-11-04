@@ -18,7 +18,10 @@ use App\Mail\VolunteerNotificationMail;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 class IdproofController extends Controller
 {
     public function __construct() {
@@ -88,12 +91,15 @@ class IdproofController extends Controller
     // }
 
     public function download_pdf($id, $filter) {
-        // Use a more efficient way to retrieve data
+
+// Use a more efficient way to retrieve data
         $data = null;
 
         if ($filter === 'participant') {
             $data = User::find($id);
+            $type = 'user';
         } elseif ($filter === 'team') {
+            $type = 'team';
             $data = Volunteer::find($id);
         }
 
@@ -101,14 +107,25 @@ class IdproofController extends Controller
         if (!$data) {
             return redirect()->back()->withErrors('Data not found.');
         }
-
         $volunteer = $data;
-        $pdf = Pdf::loadView('admin.id_card.id_card', compact('volunteer'));
+        // Construct the image URL manually
+        $imagePath = $volunteer->image;
 
-        $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+        // Extract only the image name (e.g., '35ce80e0112560d7575c66d0af7407a9.jpg')
+        $imageUrl = basename($imagePath); // This will give you just the file name
+        $imageType = pathinfo($imageUrl, PATHINFO_EXTENSION) === 'jpg' ? 'jpeg' : 'png'; // Determine the image type
+        $options = new Options();
+        $options->set('defaultFont', 'Courier'); // Set default font
+        $options->set('isHtml5ParserEnabled', true); // Enable HTML5 support
+        $dompdf = new Dompdf($options);
 
-        // Stream the PDF with a smaller timeout
-        return $pdf->download($filename);
+        $html = view('admin.id_card.id_card', compact('volunteer', 'imageUrl', 'imageType', 'type'))->render(); // Your Blade view
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        // Stream the PDF as a downloadable file
+        return $dompdf->stream('id_card.pdf', ['Attachment' => true]); // true for download
     }
 
     public function preview_pdf($id, $filter) {
@@ -117,7 +134,10 @@ class IdproofController extends Controller
 
         if ($filter === 'participant') {
             $data = User::find($id);
+            $type='user';
         } elseif ($filter === 'team') {
+            $type='team';
+
             $data = Volunteer::find($id);
         }
 
@@ -127,12 +147,29 @@ class IdproofController extends Controller
         }
 
         $volunteer = $data;
-        $pdf = Pdf::loadView('admin.id_card.id_card', compact('volunteer'));
+         // Construct the image URL manually
+         $imagePath = $volunteer->image;
+         $imagePath = $volunteer->image;
+
+         // Extract only the image name (e.g., '35ce80e0112560d7575c66d0af7407a9.jpg')
+         $imageUrl = basename($imagePath); // This will give you just the file name
+        //  $imageType = pathinfo($imageUrl, PATHINFO_EXTENSION);
+         $imageType = pathinfo($imageUrl, PATHINFO_EXTENSION) === 'jpg' ? 'jpeg' : 'png';    // Construct the image URL
 
 
-        // Stream the PDF to the browser for preview
-        return $pdf->stream('volunteer_id_card_' . $volunteer->id . '.pdf');
+        $options = new Options();
+        $options->set('defaultFont', 'Courier'); // Set default font
+        $options->set('isHtml5ParserEnabled', true); // Enable HTML5 support
+        $dompdf = new Dompdf($options);
+
+        $html = view('admin.id_card.id_card', compact('volunteer','imageUrl','imageType','type'))->render(); // Your Blade view
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+    return $dompdf->stream('id_card.pdf', ['Attachment' => false]); // false for inline display
+    // $dompdf->stream('id_card.pdf');
     }
+
 
 
 

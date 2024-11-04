@@ -368,20 +368,20 @@ class VolunteerController extends Controller
         return view('admin.users.user_list',compact('users'));
     }
 
-    // public function volunteer_id_card_download($id){
-    //     // $volunteer = Volunteer::findOrFail($id);
-    //     // return view('admin.volunteer.id_card',compact('volunteer'));
-    //     $volunteer = Volunteer::findOrFail($id);
+    public function volunteer_id_card_download($id){
+        // $volunteer = Volunteer::findOrFail($id);
+        // return view('admin.volunteer.id_card',compact('volunteer'));
+        $volunteer = Volunteer::findOrFail($id);
 
-    //     // Load the view and pass the volunteer data to it
-    //     $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
+        // Load the view and pass the volunteer data to it
+        $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
 
-    //     // Set the download filename
-    //     $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+        // Set the download filename
+        $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
 
-    //     // Return the generated PDF as a download
-    //     return $pdf->download($filename);
-    // }
+        // Return the generated PDF as a download
+        return $pdf->download($filename);
+    }
 
     // public function volunteer_id_card_download($id)
     // {
@@ -398,53 +398,66 @@ class VolunteerController extends Controller
     //     return $pdf->stream($filename);
     // }
 
-    public function volunteer_id_card_download($id)
-    {
-        // Extend the execution time to 300 seconds (5 minutes) or any preferred duration
-        set_time_limit(300);
+    // public function volunteer_id_card_download($id)
+    // {
+    //     // Extend the execution time to 300 seconds (5 minutes) or any preferred duration
+    //     set_time_limit(300);
 
-        $volunteer = Volunteer::where('id', $id)
-        ->select('image', 'id', 'name', 'designation', 'father_name', 'phone', 'email', 'address')
-        ->firstOrFail();
-        $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
-        $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+    //     $volunteer = Volunteer::where('id', $id)
+    //     ->select('image', 'id', 'name', 'designation', 'father_name', 'phone', 'email', 'address')
+    //     ->firstOrFail();
+    //     $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
+    //     $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
 
-        return $pdf->stream($filename);
-    }
+    //     return $pdf->stream($filename);
+    // }
     public function clearAllCaches()
-    {
-        try {
-            // Clear application cache
-            Artisan::call('cache:clear');
-            echo "Application cache cleared.<br>";
+{
+    try {
+        // Clear application cache
+        Artisan::call('cache:clear');
+        echo "Application cache cleared.<br>";
 
-            // Clear route cache
-            Artisan::call('route:clear');
-            echo "Route cache cleared.<br>";
+        // Clear route cache
+        Artisan::call('route:clear');
+        echo "Route cache cleared.<br>";
 
-            // Clear view cache
-            Artisan::call('view:clear');
-            echo "View cache cleared.<br>";
+        // Clear view cache
+        Artisan::call('view:clear');
+        echo "View cache cleared.<br>";
 
-            // Clear config cache
-            Artisan::call('config:clear');
-            echo "Config cache cleared.<br>";
+        // Clear config cache
+        Artisan::call('config:clear');
+        echo "Config cache cleared.<br>";
 
-            // Optional: Re-optimize the application by caching routes and config
-            Artisan::call('config:cache');
-            echo "Config cached.<br>";
+        // Clear event cache (if applicable)
+        Artisan::call('event:clear');
+        echo "Event cache cleared.<br>";
 
-            Artisan::call('route:cache');
-            echo "Route cached.<br>";
+        // Clear compiled classes (optional)
+        Artisan::call('clear-compiled');
+        echo "Compiled classes cleared.<br>";
 
-            Artisan::call('view:cache');
-            echo "View cached.<br>";
+        // Clear sessions
 
-            return "All caches cleared and optimized successfully!";
-        } catch (\Exception $e) {
-            dd($e);
-            return "Error clearing caches: " . $e->getMessage();
-        }
+
+
+        // Optional: Re-optimize the application by caching routes and config
+        Artisan::call('config:cache');
+        echo "Config cached.<br>";
+
+        Artisan::call('route:cache');
+        echo "Route cached.<br>";
+
+        Artisan::call('view:cache');
+        echo "View cached.<br>";
+
+        return "All caches cleared and optimized successfully!";
+    } catch (\Exception $e) {
+        dd($e);
+        return redirect()->back()->with("Error clearing caches: " . $e->getMessage());
     }
+}
+
 
 }

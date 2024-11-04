@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,22 +17,16 @@
         }
 
         .card-table {
-            width: 100%;
-            /* page-break-inside: avoid; */
-            /* width: min(90vw, 400px);
-            /* background: white; */
+            width: min(90vw, 400px);
+            background: white;
             border-collapse: collapse;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
         }
 
         .top-design {
+            background-image: url('/uploads/id-card/bgimg.png');
             height: 443px;
             background-repeat: no-repeat;
             position: relative;
-            background-size: cover;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
         }
 
         .logo-cell {
@@ -77,20 +69,19 @@
             border: 4px solid white;
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 51%;
             transform: translate(-50%, -50%);
             background: #FB8C00;
             overflow: hidden;
         }
 
         .photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 170px;
+            height: 170px;
         }
 
         .details-cell {
-            padding: 20px 30px;
+            padding: 0px 30px 30px;
             text-align: center;
         }
 
@@ -124,7 +115,7 @@
 
         .info-label {
             color: #666;
-            width: 120px;
+            width: 80px;
         }
 
         .barcode {
@@ -149,19 +140,18 @@
 <body>
     <table class="card-table">
         <tr>
-            <td class="top-design" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('uploads/id-card/bgimg.png'))) }}');">
+            <td class="top-design"  >
                 <table width="100%">
                     <tr>
                         <td class="logo-cell">
                             <table class="logo-table">
                                 <tr>
                                     <td>
-                                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('uploads/id-card/logo.png'))) }}" alt="Logo" class="logo">
-
+                                        <img src="{{asset('uploads/id-card/logo.png')}}" alt="Logo" class="logo">
                                     </td>
                                     <td>
                                         <div class="company-name">
-                                            KT Wing
+                                         KT Wing
                                         </div>
                                     </td>
                                 </tr>
@@ -172,15 +162,6 @@
                         <td class="photo-cell">
                             <div class="photo">
 
-                            @if($type == 'team')
-                                <img src="data:image/{{ $imageType}};base64,{{ base64_encode(file_get_contents(public_path('uploads/volunteer/' . $imageUrl))) }}"
-                                alt="Employee Photo" class="image img-thumbnail" height="100px" width="100px"
-                                  />
-                            @else
-                                <img src="data:image/{{ $imageType}};base64,{{ base64_encode(file_get_contents(public_path('uploads/users/' . $imageUrl))) }}"
-                                alt="Employee Photo" class="image img-thumbnail" height="100px" width="100px"
-                                 />
-                            @endif
                             </div>
                         </td>
                     </tr>
@@ -190,34 +171,36 @@
         <tr>
             <td class="details-cell">
                 <div class="name">{{ $volunteer->name }}</div>
-                <div class="role">{{ $volunteer->designation ?? '' }}</div>
+                <div class="role">{{ isset($volunteer->designation) ? $volunteer->designation : '' }}</div>
                 <table class="info-table">
                     <tr>
                         <td class="info-label">ID No</td>
-                        <td>: {{ $volunteer->id }}</td>
+                        <td>:{{ $volunteer->id }}</td>
+
                     </tr>
                     <tr>
                         <td class="info-label">Father's Name</td>
-                        <td>: {{ $volunteer->father_name ?? '' }}</td>
+                        <td>:{{ isset($volunteer->father_name) ? $volunteer->father_name : '' }}</td>
                     </tr>
                     <tr>
                         <td class="info-label">E-mail</td>
-                        <td>: {{ $volunteer->email ?? '' }}</td>
+                        <td>:{{ isset($volunteer->email) ? $volunteer->email : '' }}</td>
+
                     </tr>
                     <tr>
                         <td class="info-label">Phone</td>
-                        <td>: {{ $volunteer->phone ?? '' }}</td>
+                        <td>:<?php echo isset($volunteer->phone) ? $volunteer->phone : '' ?></td>
+
                     </tr>
                     <tr>
                         <td class="info-label">Address</td>
-                        <td>: {{ $volunteer->address ?? '' }}</td>
+                        <td>:<?php echo isset($volunteer->addresss) ? $volunteer->addresss : '' ?></td>
                     </tr>
                 </table>
+
             </td>
         </tr>
     </table>
 </body>
 
 </html>
-
-{{-- {{dd(3)}} --}}

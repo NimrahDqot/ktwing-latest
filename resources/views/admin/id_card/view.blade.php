@@ -3,11 +3,12 @@
     <h1 class="h3 mb-3 text-gray-800">View ID Card</h1>
     <div class="card shadow mb-4">
         <div class="card-body">
-            <div class="table-responsive">
-                <div class="d-flex justify-content-left">
-                    <form class="d-flex flex-wrap align-items-left" id="search" action="{{ route('admin_id_card_view') }}"
+
+
+                    {{-- <form class="d-flex justify-content-between flex-row" id="search" action="{{ route('admin_id_card_view') }}"
                         method="GET">
-                        <div class="me-sm-3 ml-2 mt-2">
+                        <div class="d-flex flex-row " style="    align-items: baseline;gap:13px;">
+                          <div class="">
                             <label>
                                 <input type="radio" name="filter" value="team" onchange="toggleFilter()"> Team
                             </label>
@@ -15,46 +16,86 @@
                                 <input type="radio" name="filter" value="participant" onchange="toggleFilter()">
                                 Participant
                             </label>
-                        </div>
+                          </div>
 
-                        <div id="teamSelect" class="me-sm-3 ml-2" style="display:none;">
-                            <select name="team_id" class="form-control">
-                                <option selected disabled>--Select Team--</option>
-                                @foreach ($teams as $team)
-                                    <option value="{{ $team->id }}">{{ $team->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                            <div id="teamSelect" class="me-sm-3 ml-2" style="display:none;">
+                                <select name="team_id" class="form-control">
+                                    <option selected disabled>--Select Team--</option>
+                                    @foreach ($teams as $team)
+                                        <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        <div id="participantSelect" class="me-sm-3 ml-2" style="display:none;">
-                            <select name="participant_id" class="form-control">
-                                <option selected disabled>--Select Participant--</option>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                            <div id="participantSelect" class="me-sm-3 ml-2" style="display:none;">
+                                <select name="participant_id" class="form-control">
+                                    <option selected disabled>--Select Participant--</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
 
-                        <div class="col-auto d-flex" style="float: right; margin-left: 100px;">
-                            <div class="my-1 my-lg-0">
                                 <a type="reset" href="{{ route('admin_id_card_view') }}" class="btn btn-secondary waves-effect waves-light">Clear</a>
-                                <button type="submit" class="btn btn-danger waves-effect waves-light">Search</button>
+                                <button type="submit" class="btn btn-danger waves-effect waves-light">Search</button> --}}
                                 {{-- <a type="submit" class="btn btn-danger waves-effect waves-light">View Format
                                     <img src="{{asset('uploads\business-id-card-template-with-minimalist-elements_23-2148708736.avif')}}"  alt="">
                                 </a> --}}
+
+                        {{-- </div>
+
+
+
+                        <a href="{{ asset('uploads/id-card/id-card-format.png') }}"
+                            target="_blank" class="btn btn-info waves-effect waves-light">
+                            View Id-Card Format
+                        </a>
+
+
+
+                    </form> --}}
+
+                    <form class="d-flex justify-content-between flex-row" id="search" action="{{ route('admin_id_card_view') }}" method="GET">
+                        <div class="d-flex flex-row" style="align-items: baseline; gap: 13px;">
+                            <div>
+                                <label>
+                                    <input type="radio" name="filter" value="team" onchange="toggleFilter()" {{ $selectedTeam ? 'checked' : '' }}> Team
+                                </label>
+                                <label>
+                                    <input type="radio" name="filter" value="participant" onchange="toggleFilter()" {{ $selectedParticipant ? 'checked' : '' }}>
+                                    Participant
+                                </label>
                             </div>
-                            <div class="text-lg-end">
-                                <a href="{{ asset('uploads/business-id-card-template-with-minimalist-elements_23-2148708736.avif') }}"
-                                   target="_blank" class="btn btn-info waves-effect waves-light">
-                                   View Id-Card Format
-                                </a>
+
+                            <div id="teamSelect" class="me-sm-3 ml-2" style="{{ $selectedTeam ? 'display:block;' : 'display:none;' }}">
+                                <select name="team_id" class="form-control">
+                                    <option selected disabled>--Select Team--</option>
+                                    @foreach ($teams as $team)
+                                        <option value="{{ $team->id }}" {{ $selectedTeam && $selectedTeam->id == $team->id ? 'selected' : '' }}>{{ $team->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
+
+                            <div id="participantSelect" class="me-sm-3 ml-2" style="{{ $selectedParticipant ? 'display:block;' : 'display:none;' }}">
+                                <select name="participant_id" class="form-control">
+                                    <option selected disabled>--Select Participant--</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}" {{ $selectedParticipant && $selectedParticipant->id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <a type="reset" href="{{ route('admin_id_card_view') }}" class="btn btn-secondary waves-effect waves-light">Clear</a>
+                            <button type="submit" class="btn btn-danger waves-effect waves-light">Search</button>
                         </div>
 
+                        <a href="{{ asset('uploads/id-card/id-card.pdf') }}" download class="btn btn-info waves-effect waves-light">
+                            Download Id-Card Format
+                        </a>
+
                     </form>
-                </div>
-            </div>
+
         </div>
     </div>
     <div class="card shadow mb-4">

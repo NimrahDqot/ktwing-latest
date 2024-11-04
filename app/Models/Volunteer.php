@@ -35,6 +35,18 @@ class Volunteer extends Model
         $defaultImage = url('uploads/default/default.jpg');
         return $defaultImage;
     }
+    // public function getImageAttribute() {
+    //     // Define the path to the uploads directory
+    //     $imagePath = public_path('uploads/volunteer/' . $this->attributes['image']);
+
+    //     // If the image attribute exists and the file exists, return its full path
+    //     if (!empty($this->attributes['image']) && file_exists($imagePath)) {
+    //         return url('uploads/volunteer/' . $this->attributes['image']);
+    //     }
+
+    //     // Return the default image path if no image is set
+    //     return url('uploads/default/default.jpg');
+    // }
 
 
     public function village(){

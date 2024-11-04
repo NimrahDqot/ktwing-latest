@@ -62,5 +62,5 @@ class DashboardController extends Controller
         return view('admin.home', compact('events','event_category','villages','attendees','volunteers','total_villages','total_volunteers','total_completed_events','total_upcoming_events','total_pending_events','modules'));
     }
 
-  
+
 }

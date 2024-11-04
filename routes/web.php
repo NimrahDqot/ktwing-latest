@@ -1246,4 +1246,15 @@ Route::post('admin/id-card/update/{id}', [IdCardControllerForAdmin::class,'updat
 Route::get('admin/id-card-status/{id}', [IdCardControllerForAdmin::class,'change_status']);
 
 
-Route::get('/clear-all-caches', [VolunteerController::class,'clearAllCaches']);
+Route::get('admin/clear-all-caches', [VolunteerController::class,'clearAllCaches']);
+Route::get('admin/phpinfo', function(){
+
+
+
+if (extension_loaded('gd')) {
+    echo 'GD is loaded';
+} else {
+    echo 'GD is not loaded';
+}
+return phpinfo();
+      });
