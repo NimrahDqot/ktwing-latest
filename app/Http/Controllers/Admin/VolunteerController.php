@@ -17,7 +17,10 @@ use Hash;
 use App\Mail\VolunteerNotificationMail;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Support\Facades\Artisan;
 class VolunteerController extends Controller
 {
@@ -368,20 +371,51 @@ class VolunteerController extends Controller
         return view('admin.users.user_list',compact('users'));
     }
 
-    public function volunteer_id_card_download($id){
-        // $volunteer = Volunteer::findOrFail($id);
-        // return view('admin.volunteer.id_card',compact('volunteer'));
-        $volunteer = Volunteer::findOrFail($id);
+    // public function volunteer_id_card_download($id){
+    //     // $volunteer = Volunteer::findOrFail($id);
+    //     // return view('admin.volunteer.id_card',compact('volunteer'));
+    //     $volunteer = Volunteer::findOrFail($id);
 
-        // Load the view and pass the volunteer data to it
-        $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
+    //     // Load the view and pass the volunteer data to it
+    //     $pdf = Pdf::loadView('admin.volunteer.id_card', compact('volunteer'));
 
-        // Set the download filename
-        $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
+    //     // Set the download filename
+    //     $filename = 'volunteer_id_card_' . $volunteer->id . '.pdf';
 
-        // Return the generated PDF as a download
-        return $pdf->download($filename);
-    }
+    //     // Return the generated PDF as a download
+    //     return $pdf->download($filename);
+    // }
+
+    public function volunteer_id_card_download($id) {
+
+                $data = null;
+                    $type = 'team';
+                    $data = Volunteer::find($id);
+
+                // Check if data is found
+                if (!$data) {
+                    return redirect()->back()->withErrors('Data not found.');
+                }
+                $volunteer = $data;
+                // Construct the image URL manually
+                $imagePath = $volunteer->image;
+
+                // Extract only the image name (e.g., '35ce80e0112560d7575c66d0af7407a9.jpg')
+                $imageUrl = basename($imagePath); // This will give you just the file name
+                $imageType = pathinfo($imageUrl, PATHINFO_EXTENSION) === 'jpg' ? 'jpeg' : 'png'; // Determine the image type
+                $options = new Options();
+                $options->set('defaultFont', 'Courier'); // Set default font
+                $options->set('isHtml5ParserEnabled', true); // Enable HTML5 support
+                $dompdf = new Dompdf($options);
+
+                $html = view('admin.id_card.id_card', compact('volunteer', 'imageUrl', 'imageType', 'type'))->render(); // Your Blade view
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+
+                // Stream the PDF as a downloadable file
+                return $dompdf->stream('id_card.pdf', ['Attachment' => true]); // true for download
+            }
 
     // public function volunteer_id_card_download($id)
     // {

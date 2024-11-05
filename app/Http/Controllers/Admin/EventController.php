@@ -7,6 +7,10 @@ use App\Models\Village;
 use App\Models\Volunteer;
 use App\Models\Attendees;
 use App\Models\Notification;
+use App\Models\State;
+use App\Models\District;
+use App\Models\SubDistrict;
+use App\Models\SubDistrictVillage;
 
 use App\Models\EventCompleteRequest;
 use Illuminate\Http\Request;
@@ -61,10 +65,11 @@ class EventController extends Controller
     }
 
     public function create() {
+        $states = State::orderBy('created_at','desc')->where('country_id',101)->select('id','name')->get();
         $event_category = EventCategory::active()->orderBy('created_at','desc')->get();
         $villages = Village::active()->orderBy('created_at','desc')->get();
         $attendees = Attendees::orderBy('created_at','desc')->get();
-          return view('admin.event.create', compact('event_category','villages','attendees'));
+          return view('admin.event.create', compact('event_category','villages','attendees','states'));
     }
 
 
@@ -89,13 +94,11 @@ class EventController extends Controller
     }
 
     public function store(Request $request) {
-
         if(env('PROJECT_MODE') == 0) {
             return redirect()->back()->with('error', env('PROJECT_NOTIFICATION'));
         }
         $event = new Event();
         $data = $request->only($event->getFillable());
-
         $request->validate([
             'event_category_id' => 'required',
             'name' => 'required|string|max:250',
@@ -108,7 +111,7 @@ class EventController extends Controller
             'expected_attendance' => 'required',
             'resoure_list' => 'required',
             // 'attendees_id' => 'required|array',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120|dimensions:width=800,height=600',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120|dimensions:width=800,height=600',
         ]);
 
         if($request->hasFile('image')){
@@ -121,15 +124,27 @@ class EventController extends Controller
             $data['image'] = $final_name;
         }
         $event->fill($data)->save();
-        return redirect()->route('admin_event_view')->with('success', SUCCESS_ACTION);
+
+return redirect()->route('admin_event_view')->with('success', SUCCESS_ACTION);
     }
 
     public function edit($id) {
         $event = Event::findOrFail($id);
         $event_category = EventCategory::orderBy('created_at','desc')->get();
         $villages = Village::orderBy('created_at','desc')->get();
+        $states = State::orderBy('created_at','desc')->where('country_id', 101)->select('id', 'name')->get();
         $attendees = Attendees::orderBy('created_at','desc')->get();
-        return view('admin.event.edit', compact('event','event_category','villages','attendees'));
+           // Fetch districts based on the village's state
+           $districts = District::where('state_id', $event->state_id)->orderBy('created_at', 'desc')->select('id', 'name')->get();
+
+           // Fetch sub-districts based on the village's district
+           $subDistricts = SubDistrict::where('district_id', $event->district_id)->orderBy('created_at', 'desc')->select('id', 'name')->get();
+
+           // Fetch villages based on the village's sub-district
+           $subDistrictVillage = SubDistrictVillage::where('sub_district_id', $event->sub_district_id)->orderBy('created_at', 'desc')->select('id', 'name')->get();
+            return view('admin.event.edit', compact('event','event_category','villages','attendees', 'states', 'districts', 'subDistricts', 'subDistrictVillage'));
+
+
 
     }
 

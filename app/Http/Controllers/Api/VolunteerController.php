@@ -204,6 +204,7 @@ class VolunteerController extends BaseController
             return $this->sendResponse($profile_detail, 'Profile detail retrieved successfully.');
 
         } catch (\Exception $e) {
+
             return $this->sendError('An error occurred while retrieving app strings.', $e->getMessage());
         }
     }
@@ -265,14 +266,18 @@ class VolunteerController extends BaseController
         // Group by event status and count
         $eventsCount = $events->groupBy('event_status')->map(function ($group) {
             return [
-                'event_status' => $group->first()->event_status,
-                'count' => $group->count(),
-                'image' => $group->first()->image,
-                'name' => $group->first()->name,
-                'village' => $group->first()->village_info->name
+                // Using ternary operator to handle potential null values
+                'event_status' => $group->first()->event_status ?: 'Unknown Status', // Default value if event_status is null or empty
+                'count' => $group->count() > 0 ? $group->count() : 0, // Ensure count is a valid number
+                'image' => !empty($group->first()->image) ? $group->first()->image : 'default-image.jpg', // Default image if none exists
+                'name' => !empty($group->first()->name) ? $group->first()->name : 'Unnamed Event', // Default name if none exists
+                'village' => ($group->first()->village_name_info && !empty($group->first()->village_name_info->name))
+                    ? $group->first()->village_name_info->name
+                    : 'No Village Name', // Handle case when village name is not present
             ];
-        })->values(); // Get the final collection
 
+        })->values();
+         // Get the final collection
         return $eventsCount;
     }
 
@@ -299,7 +304,8 @@ class VolunteerController extends BaseController
             'dob' => 'required|date',
             'role' => 'required|max:255',
             'bio' => 'required|max:255',
-            'grade' => 'required|numeric|min:0|max:5',
+            // 'grade' => 'required|numeric|min:0|max:5',
+            'grade' => 'required|in:A,B,C,D',
             'review' => 'required',
             'audio' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image validation
@@ -395,7 +401,7 @@ class VolunteerController extends BaseController
                         'event_status' => $event->event_status,
                         'image' => $event->image,
                         'name' => $event->name,
-                        'village' => isset($event->village_info->name) ? $event->village_info->name : 'N/A', // Directly access village name with null fallback
+                        'village' => ($event->village_name_info->name && !empty($event->village_name_info->name)) ? $event->village_name_info->name : 'No Village Name',
                         'event_date' => $event->event_date,
                         'event_time' => $event->event_time,
                     ];
@@ -437,14 +443,16 @@ class VolunteerController extends BaseController
 
 
               $event_data = Event::where('event_status',$type)
-            ->with('village_info:name,id')
-            ->select('id','event_status', 'image','name','village_id','event_date','event_time'); // Select the required fields
+            ->with('village_name_info:name,id')
+            ->select('id','event_status', 'image','name','village_id','event_date','event_time','volunteer_id'); // Select the required fields
+
             if($user_type == 0){
                 $eventRequest = Volunteer::find($user_id);
                 if (!$eventRequest) {
-                    return $this->sendError('Volunteer id not found.');
+                return $this->sendError('Volunteer id not found.');
                 }
                 $events = $event_data->whereRaw("FIND_IN_SET(?, volunteer_id)", [$user_id])->paginate($per_page,['*'], 'page', $page_no);
+
             }else{
                 $eventRequest = User::find($user_id);
 
@@ -454,17 +462,18 @@ class VolunteerController extends BaseController
                 $events = $event_data->paginate($per_page,['*'], 'page', $page_no);
             }
 
+
             $response = [
                 'current_page' => $events->currentPage(),
                 'next_page' => $events->hasMorePages() ? $events->currentPage() + 1 : $events->lastPage(),
                 'total_pages' => $events->lastPage(),
                 'data' => $events->map(function ($event) {
-                    return [
+                     return [
                         'id' => $event->id,
                         'event_status' => $event->event_status,
                         'image' => $event->image,
                         'name' => $event->name,
-                        'village' => isset($event->village_info->name) ? $event->village_info->name : 'N/A', // Directly access village name with null fallback
+                        'village' => (isset($event->village_name_info->name) && !empty($event->village_name_info->name)) ? $event->village_name_info->name : 'No Village Name',
                         'event_date' => $event->event_date,
                         'event_time' => $event->event_time,
                     ];
@@ -472,8 +481,9 @@ class VolunteerController extends BaseController
             ];
             return $this->sendResponse($response, 'Events Retrieve successfully.');
         }catch (\Exception $e) {
+            dd($e);
             // Handle exceptions and return error response
-            return $this->sendError('An error occurred while retrieving app strings.', $e->getMessage());
+            return $this->sendError('An error occurred while retrieving events.', $e->getMessage());
         }
     }
 
@@ -499,7 +509,7 @@ class VolunteerController extends BaseController
 
 
             $event = Event::where('id',$event_id)
-            ->with('village_info:id,name') // Eager load village name
+            ->with('village_name_info:id,name') // Eager load village name
             ->with('attendee_info:id,name,role,image') // Eager load village name
             ->select('id','event_status', 'image','name','village_id','event_date','event_time','description','event_duration','event_agenda','attendees_id','expected_attendance','volunteer_id','event_status','uploaded_photos','uploaded_videos','uploaded_audios') // Select the required fields
             ->first();
@@ -520,7 +530,7 @@ class VolunteerController extends BaseController
                 'image' => $event->image,
                 'name' => $event->name,
                 'expected_attendance' => $event->expected_attendance,
-                'village' => $event->village_info->name ?? 'N/A',
+                'village' => (isset($event->village_name_info->name) && !empty($event->village_name_info->name)) ? $event->village_name_info->name : 'No Village Name',
                 'event_date' => $event->event_date,
                 'event_time' => $event->event_time,
                 'description' => $event->description,
@@ -567,7 +577,7 @@ class VolunteerController extends BaseController
             $event_id = $request->event_id;
             $event = Event::whereRaw("FIND_IN_SET(?, volunteer_id)", [$user_id])
             ->where('id',$event_id)
-            ->with('village_info:id,name') // Eager load village name
+            ->with('village_name_info:id,name') // Eager load village name
             ->with('attendee_info:id,name,role,image') // Eager load village name
             ->select('id','event_status', 'image','name','village_id','event_date','event_time','description','event_duration','event_agenda','attendees_id','expected_attendance','volunteer_id','event_status','uploaded_photos','uploaded_videos','uploaded_audios') // Select the required fields
             ->first();
@@ -588,8 +598,8 @@ class VolunteerController extends BaseController
                 'event_status' => $event->event_status,
                 'image' => $event->image,
                 'name' => $event->name,
-                'expected_attendance' => $event->expected_attendance,
-                'village' => $event->village_info->name ?? 'N/A',
+                'expected_attendance' => (isset($event->expected_attendance)) ? $event->expected_attendance:  '0',
+                'village' =>(isset($event->village_name_info->name) && !empty($event->village_name_info->name)) ? $event->village_name_info->name : 'No Village Name',
                 'event_date' => $event->event_date,
                 'event_time' => $event->event_time,
                 'description' => $event->description,
@@ -795,14 +805,18 @@ class VolunteerController extends BaseController
 
             $event = Event::whereRaw("FIND_IN_SET(?, volunteer_id)", [$user_id])
             ->where('id',$event_id)
-            ->with('village_info:id,name') // Eager load village name
-            ->select('id','name','village_id','event_date','expected_attendance','uploaded_photos','uploaded_videos','uploaded_audios') // Select the required fields
+            ->with('village_name_info:id,name') // Eager load village name
+            ->select('id','name','village_id','event_date','expected_attendance','uploaded_photos','uploaded_videos','uploaded_audios','volunteer_id') // Select the required fields
             ->first();
+            if(!$event){
+                return $this->sendError('Event not found.');
+
+            }
             $response = [
                 'id' => $event->id,
                 'name' => $event->name,
                 'expected_attendance' => $event->expected_attendance,
-                'village' => $event->village_info->name ?? 'N/A',
+                'village' => (isset($event->village_name_info->name) && !empty($event->village_name_info->name)) ? $event->village_name_info->name : 'No Village Name',
                 'event_date' => $event->event_date,
 
             ];
@@ -1033,6 +1047,10 @@ class VolunteerController extends BaseController
         $user_id = $request->user_id;
       // ############## PROFILE DATA #################
         $profile_detail = Volunteer::where('id', $user_id)->select('id',   'name', 'phone', 'email',  'image','referal_code','referral_count','current_level', 'status','created_at')->first();
+        if(!$profile_detail){
+            return $this->sendError('Team id not found.');
+
+        }
         $profile_detail->usertype ="Team";
         $app_refer_url = !empty($profile_detail->referal_code) ? env('APP_URL').'download/'.$profile_detail->referal_code : env('APP_URL').'/get-apk/KTW'.rand(0,10000);
 

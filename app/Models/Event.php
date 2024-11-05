@@ -9,7 +9,7 @@ class Event extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-         'name', 'description', 'image', 'village_id', 'event_category_id', 'event_date', 'event_time', 'event_duration', 'event_agenda', 'expected_attendance', 'resoure_list', 'status', 'event_status','attendees_id','uploaded_photos', 'uploaded_videos', 'uploaded_audios'
+         'name', 'description', 'image', 'village_id', 'event_category_id', 'event_date', 'event_time', 'event_duration', 'event_agenda', 'expected_attendance', 'resoure_list', 'status', 'event_status','attendees_id','uploaded_photos', 'uploaded_videos', 'uploaded_audios','state_id','sub_district_id','district_id'
     ];
 
 
@@ -83,6 +83,10 @@ class Event extends Model
     }
     public function village_info(){
         return $this->belongsTo(Village::class,'village_id','id');
+    }
+
+    public function village_name_info(){
+        return $this->belongsTo(SubDistrictVillage::class,'village_id','id');
     }
     public function attendee_info(){
         return $this->belongsTo(Attendees::class,'attendees_id','id');

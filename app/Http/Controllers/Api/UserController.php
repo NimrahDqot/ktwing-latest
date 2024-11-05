@@ -644,6 +644,10 @@ class UserController extends BaseController
 
         try {
           $user_id = $request->user_id;
+          $user = User::find($user_id);
+          if (!$user) {
+              return $this->sendError('User not found.');
+          }
           $profile_detail = User::where('id', $user_id)->select('id', 'refer_id', 'name', 'phone', 'email', 'dob', 'gender', 'image','referal_code','referral_count','current_level', 'status','created_at')->first();
           $profile_detail->usertype ="Participant";
           $app_refer_url = !empty($profile_detail->referal_code) ? env('APP_URL').'download/'.$profile_detail->referal_code : env('APP_URL').'/get-apk/KTW'.rand(0,10000);

@@ -100,7 +100,7 @@
                                 <td>Experience: {{ $row->experience }} <br> {{ $row->email }} <br> {{ $row->phone }}
                                 </td>
                                 <td class="text-capitalize">
-                                    <td class="text-capitalize">{{ optional($row->Role)->name ?? 'Not found' }}</td>
+                                    {{ optional($row->Role)->name ?? 'Not found' }}
                                 </td>
 
                                 <td>
