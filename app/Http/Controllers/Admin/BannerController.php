@@ -14,8 +14,13 @@ class BannerController extends Controller
         $this->middleware('auth.admin:admin');
     }
 
-    public function index() {
-        $banner = Banner::orderBy('created_at')->paginate(10);
+    public function index(Request $request) {
+        $query = Banner::query();
+        if (isset($request->type)) {
+            // echo $request->status;
+            $query->where('type', $request->type);
+        }
+        $banner = $query->paginate(10);
         return view('admin.banner_view', compact('banner'));
     }
 

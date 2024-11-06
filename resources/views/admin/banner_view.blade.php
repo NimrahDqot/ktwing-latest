@@ -1,7 +1,32 @@
 @extends('admin.app_admin')
 @section('admin_content')
-    <h1 class="h3 mb-3 text-gray-800">Banner</h1>
+    <h1 class="h3 mb-3 text-gray-800 text-capitalize">{{ request('type')}}</h1>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="d-flex justify-content-left">
+                    <form class="d-flex flex-wrap align-items-left" id="search" action="{{ route('admin_banner_view') }}"  method="GET">
+                        <div class="me-sm-3 ml-2">
+                            <select name="type" class="form-control" id="statusFilter">
+                                <option selected disabled>--Select type--</option>
+                                <option value="banner"   {{ request('type') == 'banner' ? 'selected' : '' }}>Banner</option>
+                                <option value="logo"   {{ request('type') == 'logo' ? 'selected' : '' }}>Logo</option>
+                                <option value="rewards"   {{ request('type') == 'rewards' ? 'selected' : '' }}>Rewards</option>
+                                <option value="offer"   {{ request('type') == 'offer' ? 'selected' : '' }}  class="offer-select">Offers</option>
 
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <div class="text-lg-end my-1 my-lg-0">
+                                <a type="reset" href="{{ route('admin_banner_view') }}" class="btn btn-secondary waves-effect waves-light">Clear</a>
+                                <button type="submit" class="btn btn-danger waves-effect waves-light">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 mt-2 font-weight-bold text-primary"></h6>

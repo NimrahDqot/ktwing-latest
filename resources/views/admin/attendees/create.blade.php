@@ -25,7 +25,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Role</label>
+                            <label for="">Profession</label>
                             <input type="text" name="role" class="form-control" onkeydown="return /[a-zA-Z ]/i.test(event.key)" value="{{ old('role') }}">
                         </div>
                     </div>

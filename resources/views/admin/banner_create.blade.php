@@ -27,6 +27,7 @@
                                 <option value="" disabled selected>--Please select type--</option>
                                 <option value="banner">Banner</option>
                                 <option value="logo">Logo</option>
+                                <option value="rewards">Rewards</option>
                                 <option value="offer" class="offer-select">Offers</option>
                             </select>
                         </div>
@@ -62,7 +63,13 @@
                         <div id="caption"></div>
                     </div>
                 </div>
-
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="">Description</label>
+                        <textarea id="description" name="description" class="form-control editor"
+                            placeholder="Enter notification description" rows="3" required>{{ old('description') }}</textarea>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-success">{{ SUBMIT }}</button>
             </div>
         </div>

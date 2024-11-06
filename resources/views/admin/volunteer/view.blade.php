@@ -86,6 +86,7 @@
                                 <td class="text-capitalize">
                                     {{ $row->name }} <br>
                                     <b>{{ $row->referal_code }}</b> <br>
+                                    <b>{{ $row->member_id }}</b> <br>
                                     {{-- @if($row->status == '0')
                                     <span class="badge badge-pill badge-warning mt-2">Pending</span>
                                 @elseif($row->status == '1')

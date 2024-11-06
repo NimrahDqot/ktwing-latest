@@ -28,6 +28,7 @@
                                 <option value="" disabled selected>--Please select type--</option>
                                 <option value="banner" {{ $banner->type == 'banner' ? 'selected' : '' }}>Banner</option>
                                 <option value="logo" {{ $banner->type == 'logo' ? 'selected' : '' }}>Logo</option>
+                                <option value="rewards" {{ $banner->type == 'rewards' ? 'selected' : '' }}>Rewards</option>
                                 <option value="offer" class="offer-select" {{ $banner->type == 'offer' ? 'selected' : '' }}>Offers</option>
                             </select>
                         </div>
@@ -60,6 +61,13 @@
                         <span class="close close-image" onclick="closeModal()">&times;</span>
                         <img class="modal-image-content modal-content" id="modalImage">
                         <div id="caption"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Description</label>
+                            <textarea id="description" name="description" class="form-control editor"
+                                placeholder="Enter notification description" rows="3" required>{{ $banner->description }}</textarea>
+                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success">{{ UPDATE }}</button>

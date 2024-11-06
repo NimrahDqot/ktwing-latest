@@ -11,7 +11,7 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background: #f0f0f0;
+            /* background: #f0f0f0; */
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -77,7 +77,7 @@
             border: 4px solid white;
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 85%;
             transform: translate(-50%, -50%);
             background: #FB8C00;
             overflow: hidden;

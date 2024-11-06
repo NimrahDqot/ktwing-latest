@@ -69,8 +69,9 @@ class VolunteerController extends Controller
 
         $volunteer = new Volunteer();
         $data = $request->only($volunteer->getFillable());
-        $role = Role::where('name', 'like', '%volunteer%')->first();
-        $data['role_id'] = $role->id;
+          // $role = Role::where('name', 'like', '%volunteer%')->first();
+        // $data['role_id'] = $role->id;
+        $data['role_id'] = 8;
         $request->validate([
             'name' => 'required',
             'team_category_id' => 'required|numeric',
@@ -139,7 +140,19 @@ class VolunteerController extends Controller
             $data['referal_code'] = $email . $volunteer->id . $timestamp;
             // Update the volunteer with the referral code
             $volunteer->referal_code = $data['referal_code'];
+            $six_digit_id = str_pad($volunteer->id, 6, '0', STR_PAD_LEFT); // This ensures the ID is 6 digits
+
+            // Get the current date in yymmdd format (6 digits)
+            $today = now()->format('ymd');
+
+            // Concatenate the date and the 6-digit volunteer ID to form a 12-digit member_id
+            $memberId = $today . $six_digit_id;
+
+            // Save the member_id to the volunteer record
+            $volunteer->member_id = $memberId;
             $volunteer->save();
+
+
         }
 
         return redirect()->route('admin_volunteer_view')->with('success', SUCCESS_ACTION);
@@ -162,8 +175,9 @@ class VolunteerController extends Controller
 
         $volunteer = Volunteer::findOrFail($id);
         $data = $request->only($volunteer->getFillable());
-        $role = Role::where('name', 'like', '%volunteer%')->first();
-        $data['role_id'] = $role->id;
+          // $role = Role::where('name', 'like', '%volunteer%')->first();
+        // $data['role_id'] = $role->id;
+        $data['role_id'] = 8;
         $request->validate([
             'name' => 'required',
             'experience' => 'required',

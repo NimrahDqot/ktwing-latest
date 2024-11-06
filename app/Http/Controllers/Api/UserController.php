@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 class UserController extends BaseController
 {
 
@@ -659,6 +662,9 @@ class UserController extends BaseController
             $profile_detail['user_refer_level']=!empty($level_name) ? $level_name : "No Level";
             $profile_detail['user_refer_share']='Welcome to KT Wing , Please download and installed App using following url :'.$app_refer_url.' for join with us';;
             $profile_detail['total_users_refered']=$profile_detail->referral_count;
+
+            $profile_detail['pdf_url'] = $this->generatePdfUrl($user_id);
+
             return $this->sendResponse($profile_detail, 'Profile detail retrieved successfully.');
 
         } catch (\Exception $e) {
@@ -941,5 +947,55 @@ class UserController extends BaseController
 
        }
       return $this->sendResponse($apiresponse, 'Retrieved successfully.');
-      }
+    }
+
+    public function generatePdfUrl($user_id)
+    {
+        try {
+            $volunteer = User::find($user_id);
+
+            // Check if user exists
+            if (!$volunteer) {
+                throw new \Exception('user not found.');
+            }
+
+            // Construct the image URL manually
+            $imagePath = $volunteer->image;
+            $imageUrl = basename($imagePath); // Extract the image name
+            $imageType = pathinfo($imageUrl, PATHINFO_EXTENSION) === 'jpg' ? 'jpeg' : 'png'; // Determine the image type
+            $type = 'user';
+
+
+            $options = new Options();
+            $options->set('defaultFont', 'Courier'); // Set default font
+            $options->set('isHtml5ParserEnabled', true); // Enable HTML5 support
+            $dompdf = new Dompdf($options);
+            $html =  view('admin.id_card.id_card', compact('volunteer', 'imageUrl', 'imageType', 'type'))->render(); // Your Blade view
+
+            // Render the HTML view for the PDF
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            // Define the temporary storage path for the PDF
+            $pdfName = 'id_card_' . $user_id . '.pdf';
+            $tempPath = public_path('temp/' . $pdfName); // Store the PDF in the 'temp' folder
+
+            // Ensure the 'temp' directory exists
+            if (!file_exists(public_path('temp'))) {
+                mkdir(public_path('temp'), 0777, true);  // Create the directory if it doesn't exist
+            }
+
+            // Save the generated PDF to the temporary location
+            file_put_contents($tempPath, $dompdf->output());
+
+            // Generate the URL for downloading the PDF (using asset() to create a public URL)
+            return asset('temp/' . $pdfName); // Return the URL of the generated PDF
+
+        } catch (\Exception $e) {
+            $pdfName = '';
+            return $pdfName; // Return the URL of the generated PDF
+            // throw new \Exception('An error occurred while generating the PDF: ' . $e->getMessage());
+        }
+    }
 }

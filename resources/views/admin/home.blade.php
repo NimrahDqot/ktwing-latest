@@ -93,7 +93,7 @@
         </div>
     </div>
     <hr>
-<a href="{{url('clear-all-caches')}}" class="btn btn-light">Clear Cache</a>
+{{-- <a href="{{url('clear-all-caches')}}" class="btn btn-light">Clear Cache</a> --}}
     {{-- <div class="row dashboard-page">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
