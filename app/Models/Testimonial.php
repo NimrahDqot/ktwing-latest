@@ -8,18 +8,21 @@ class Testimonial extends Model
 {
     protected $fillable = [
         'name',
-        'designation',
-        'comment',
-        'photo',
-        'project_name',
-        'project_description',
-        'project_start_date',
-        'project_end_date',
-        'service_rating',
-        'schedule_rating',
-        'cost_rating',
-        'willing_to_refer_rating'
+        'description',
+        'email',
+        'phone',
+        'image',
+        'designation'
 
     ];
+    public function getImageAttribute() {
+        // If the image attribute exists in the database, return its full path
+        if (!empty($this->attributes['image'])) {
+            return url('uploads/testimonial/' . $this->attributes['image']);
+        }
 
+        // Return the default image path if no image is set
+        $defaultImage = url('uploads/default/default.jpg');
+        return $defaultImage;
+    }
 }

@@ -13,7 +13,7 @@ class User extends Authenticatable
     protected $fillable = [
       'refer_id', 'name', 'phone', 'email', 'dob', 'gender', 'password', 'fcm_token', 'socialLoginType', 'device_id', 'jwt_token',
        'custom_user_token', 'image', 'image_thumbnail', 'status','referal_code','users_refer_id','referral_count','current_level',
-       'alloted_level_gift','rejection_reason','ip_address','volunteer_id', 'role', 'bio', 'grade', 'review', 'audio',  'is_registered'  ];
+       'alloted_level_gift','rejection_reason','ip_address','volunteer_id', 'role', 'bio', 'grade', 'review', 'audio',  'is_registered','father_name','address','adhar_no'  ];
 
     public function Role(){
         return   $this->belongsTo(Role::class,'usertype');
@@ -25,8 +25,8 @@ class User extends Authenticatable
         }
 
         // Return the default image path if no image is set
-        $defaultImage = url('uploads/default/default.jpg');
-        return $defaultImage;
+        // $defaultImage = url('uploads/default/default.jpg');
+        // return $defaultImage;
     }
     public function Volunteer_info(){
         return   $this->belongsTo(Volunteer::class,'refer_id','id')->select('name', 'id');

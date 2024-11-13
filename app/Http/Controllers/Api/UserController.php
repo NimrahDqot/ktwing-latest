@@ -276,6 +276,18 @@ class UserController extends BaseController
             }
         }
         public function register(Request $request){
+            $authorizationHeader = $request->header('Authorization');
+
+            if (!$authorizationHeader) {
+                return response()->json(['error' => 'Authorization token missing'], 401);
+            }
+
+        // Bearer token should be in the format "Bearer <token>"
+        if (preg_match('/Bearer\s(\S+)/', $authorizationHeader, $matches)) {
+            $token = $matches[1]; // The token part
+        }
+
+        return $token;
            $validator = Validator::make($request->all(), [
                'username' => 'required|string|max:255',
                'mobile' => 'required|max:10|min:10',
@@ -383,7 +395,9 @@ class UserController extends BaseController
                   }
               }
           }
-
+          if($user){
+            Helper::user_member_id($user);
+        }
            return $this->sendResponse($user, 'Participates registered successfully.');
        }
       public function register_old(Request $request){

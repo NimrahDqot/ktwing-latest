@@ -59,5 +59,6 @@ Route::get('term-condition', [AuthController::class, 'term_condition']);
 Route::post('get-refer-code', [UserController::class, 'getReferCode']);
 
 Route::get('about-us', [AuthController::class, 'about_us']);
+Route::get('testimonial', [AuthController::class, 'testimonial']);
 Route::get('delete-account', [AuthController::class,'delete_account'])
     ->name('delete-account');

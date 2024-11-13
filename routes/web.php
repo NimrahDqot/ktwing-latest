@@ -61,6 +61,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\VisitorController;
 use App\Http\Controllers\Admin\LevelRewardController;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\WebController;
 use App\Http\Controllers\Api\UserController;
 use App\Models\Notification;
 use App\Models\Volunteer;
@@ -81,6 +82,10 @@ use Illuminate\Support\Facades\Response;
 Route::get('/data',function(){
     return view('state_district');
 });
+Route::get('/web-data',[WebController::class,'index'])->name('web-data');
+Route::post('enquery',[WebController::class,'enquiry_form'])->name('enquery');
+// Route::get('maha-kumbh',[WebController::class,'maha_kumbh_create'])->name('maha-kumbh');
+Route::post('maha-kumbh',[WebController::class,'maha_kumbh_store'])->name('maha-kumbh');
 // In web.php or api.php
 Route::get('/', [HomeController::class,'index'])
     ->name('index');

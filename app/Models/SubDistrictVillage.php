@@ -14,7 +14,5 @@ class SubDistrictVillage extends Model
     public function SubDistrict() {
         return $this->belongsTo(SubDistrict::class,'sub_district_id','id');
     }
-    public function scopeActive($query){
-        return $query->where('status',1);
-    }
+
 }

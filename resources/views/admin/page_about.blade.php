@@ -16,16 +16,6 @@
                     <textarea name="detail" class="form-control editor" cols="30" rows="10">{{ $page_about->detail }}</textarea>
                 </div>
                 <div class="form-group">
-                    <label for="">{{ EXISTING_BANNER }}</label>
-                    <div>
-                        <img src="{{ asset('uploads/page_banners/'.$page_about->banner) }}" alt="" class="w_300">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="">{{ CHANGE_BANNER }}</label>
-                    <div><input type="file" name="banner"></div>
-                </div>
-                <div class="form-group">
                     <label for="">{{ STATUS }}</label>
                     <div>
                         <div class="form-check form-check-inline">

@@ -37,26 +37,26 @@ class TestimonialController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'designation' => 'required',
-            'comment' => 'required',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'designation' => 'required',
+            // 'comment' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ],[
             'name.required' => ERR_NAME_REQUIRED,
             'designation.required' => ERR_DESIGNATION_REQUIRED,
-            'comment.required' => ERR_COMMENT_REQUIRED,
-            'photo.required' => ERR_PHOTO_REQUIRED,
-            'photo.image' => ERR_PHOTO_IMAGE,
-            'photo.mimes' => ERR_PHOTO_JPG_PNG_GIF,
-            'photo.max' => ERR_PHOTO_MAX
+            // 'comment.required' => ERR_COMMENT_REQUIRED,
+            'image.required' => ERR_PHOTO_REQUIRED,
+            'image.image' => ERR_PHOTO_IMAGE,
+            'image.mimes' => ERR_PHOTO_JPG_PNG_GIF,
+            'image.max' => ERR_PHOTO_MAX
         ]);
 
         $rand_value = md5(mt_rand(11111111,99999999));
-        $ext = $request->file('photo')->extension();
+        $ext = $request->file('image')->extension();
         $final_name = $rand_value.'.'.$ext;
-        $request->file('photo')->move(public_path('uploads/testimonials/'), $final_name);
+        $request->file('image')->move(public_path('uploads/testimonial/'), $final_name);
 
-        unset($data['photo']);
-        $data['photo'] = $final_name;
+        unset($data['image']);
+        $data['image'] = $final_name;
         if(isset($request->ongoing)){
             $data['project_end_date'] = null;
         }
@@ -80,36 +80,36 @@ class TestimonialController extends Controller
         $testimonial = Testimonial::findOrFail($id);
         $data = $request->only($testimonial->getFillable());
 
-        if ($request->hasFile('photo')) {
+        if ($request->hasFile('image')) {
 
             $request->validate([
-                'photo' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
             ],[
-                'photo.image' => ERR_PHOTO_IMAGE,
-                'photo.mimes' => ERR_PHOTO_JPG_PNG_GIF,
-                'photo.max' => ERR_PHOTO_MAX
+                'image.image' => ERR_PHOTO_IMAGE,
+                'image.mimes' => ERR_PHOTO_JPG_PNG_GIF,
+                'image.max' => ERR_PHOTO_MAX
             ]);
 
-            @unlink(public_path('uploads/testimonials/'.$request->current_photo));
+            @unlink(public_path('uploads/testimonial/'.$request->current_photo));
 
             // Uploading the file
             $rand_value = md5(mt_rand(11111111,99999999));
-            $ext = $request->file('photo')->extension();
+            $ext = $request->file('image')->extension();
             $final_name = $rand_value.'.'.$ext;
-            $request->file('photo')->move(public_path('uploads/testimonials/'), $final_name);
+            $request->file('image')->move(public_path('uploads/testimonial/'), $final_name);
 
-            unset($data['photo']);
-            $data['photo'] = $final_name;
+            unset($data['image']);
+            $data['image'] = $final_name;
         }
 
         $request->validate([
             'name' => 'required',
-            'designation' => 'required',
-            'comment' => 'required'
+            // 'designation' => 'required',
+            // 'comment' => 'required'
         ],[
             'name.required' => ERR_NAME_REQUIRED,
-            'designation.required' => ERR_DESIGNATION_REQUIRED,
-            'comment.required' => ERR_COMMENT_REQUIRED
+            // 'designation.required' => ERR_DESIGNATION_REQUIRED,
+            // 'comment.required' => ERR_COMMENT_REQUIRED
         ]);
         if(isset($request->ongoing)){
             $data['project_end_date'] = null;
@@ -127,7 +127,7 @@ class TestimonialController extends Controller
         }
 
         $testimonial = Testimonial::findOrFail($id);
-        @unlink(public_path('uploads/testimonials/'.$testimonial->photo));
+        @unlink(public_path('uploads/testimonial/'.$testimonial->image));
         $testimonial->delete();
         return Redirect()->back()->with('success', SUCCESS_ACTION);
     }

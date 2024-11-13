@@ -2,10 +2,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\TermItem;
+use App\Models\Testimonial;
 
 use Illuminate\Http\Request;
 use DB;
-use App\Http\Controllers\Api\BaseController as BaseController;
+// use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\PrivacyItem;
 
 use Validator;
@@ -86,4 +87,11 @@ class AuthController extends BaseController
       public function delete_account(){
           return view('admin.delete_account');
     }
+
+    public function testimonial(){
+        $testimonials = Testimonial::select('id', 'name', 'image', 'email', 'phone')->get();
+        return $this->sendResponse($testimonials, 'Testimonial list retrieved successfully.');
+  }
+
+
 }

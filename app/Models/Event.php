@@ -82,7 +82,8 @@ class Event extends Model
         return $this->belongsTo(EventCategory::class,'event_category_id','id');
     }
     public function village_info(){
-        return $this->belongsTo(Village::class,'village_id','id');
+        return $this->belongsTo(SubDistrictVillage::class,'village_id','id');
+
     }
 
     public function village_name_info(){

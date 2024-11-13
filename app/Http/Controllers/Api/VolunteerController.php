@@ -25,7 +25,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\RateLimiter;
-
+use Helper;
 class VolunteerController extends BaseController
 {
 
@@ -393,7 +393,8 @@ class VolunteerController extends BaseController
             'role' => 'required|max:255',
             'bio' => 'required|max:255',
             // 'grade' => 'required|numeric|min:0|max:5',
-            'grade' => 'required|in:A,B,C,D',
+            // 'grade' => 'required|in:A,B,C,D',
+            'grade' => 'required',
             'review' => 'required',
             'audio' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image validation
@@ -424,7 +425,11 @@ class VolunteerController extends BaseController
                 $data['audio'] = $audioName;
             }
             $data['volunteer_id'] = $volunteer_id;
+            $data['user_type'] = 'visitor';
             $visitor->fill($data)->save();
+            if($visitor){
+                Helper::user_member_id($visitor);
+            }
             return $this->sendResponse($visitor, 'Visitor created successfully successfully.');
         }catch (\Exception $e) {
             // Handle exceptions and return error response
