@@ -60,9 +60,13 @@ use App\Http\Controllers\Admin\AppLanguageController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\VisitorController;
 use App\Http\Controllers\Admin\LevelRewardController;
+use App\Http\Controllers\Admin\ActivityController;
+
+
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\WebController;
 use App\Http\Controllers\Api\UserController;
+
 use App\Models\Notification;
 use App\Models\Volunteer;
 use Illuminate\Support\Facades\Route;
@@ -840,6 +844,28 @@ Route::get('admin/social-media/edit/{id}', [SocialMediaItemController::class,'ed
 
 Route::post('admin/social-media/update/{id}', [SocialMediaItemController::class,'update'])
     ->name('admin_social_media_update');
+
+
+/* --------------------------------------- */
+/* Social You-Tube - Admin */
+/* --------------------------------------- */
+Route::get('admin/activity/view', [ActivityController::class,'index'])
+->name('admin_activity_view');
+
+Route::get('admin/activity/create', [ActivityController::class,'create'])
+->name('admin_activity_create');
+
+Route::post('admin/activity/store', [ActivityController::class,'store'])
+->name('admin_activity_store');
+
+Route::get('admin/activity/delete/{id}', [ActivityController::class,'destroy'])
+->name('admin_activity_delete');
+
+Route::get('admin/activity/edit/{id}', [ActivityController::class,'edit'])
+->name('admin_activity_edit');
+
+Route::post('admin/activity/update/{id}', [ActivityController::class,'update'])
+->name('admin_activity_update');
 
 
 

@@ -14,10 +14,10 @@ const commonConfig = {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
     },
-    autoplay: {
-        delay: 2500,
-        disableOnInteraction: false,
-    },
+    // autoplay: {
+    //     delay: 2500,
+    //     disableOnInteraction: false,
+    // },
     pagination: {
         el: ".swiper-pagination",
         clickable: true,
@@ -30,7 +30,7 @@ const commonConfig = {
         },
         500: {
             slidesPerView: 1,
-            spaceBetween: 0,    
+            spaceBetween: 0,
         },
         768: {
             slidesPerView: 2,
@@ -66,11 +66,26 @@ document.addEventListener('DOMContentLoaded', function() {
         slidesPerView: 3,
         spaceBetween: 3,
         breakpoints: {
-            ...commonConfig.breakpoints,
-            1200: {
-                slidesPerView: 3,
+            0: {
+                slidesPerView: 1,
+                spaceBetween: 0,
+            },
+            500: {
+                slidesPerView: 1,
+                spaceBetween: 0,
+            },
+            768: {
+                slidesPerView: 2,
                 spaceBetween: 10,
-            }
+            },
+            992: {
+                slidesPerView: 2,
+                spaceBetween: 30,
+            },
+            1400: {
+                slidesPerView: 3,
+                spaceBetween: 20,
+            },
         }
     });
     new Swiper(".mySwiper-testimonials-slide", {
@@ -85,13 +100,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    new Swiper(".mySwiper-testimonials-slide1", {
+        ...commonConfig,
+        slidesPerView: 4,
+        spaceBetween: 3,
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+                spaceBetween: 0,
+            },
+            500: {
+                slidesPerView: 1,
+                spaceBetween: 0,
+            },
+            768: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+            },
+            992: {
+                slidesPerView: 2,
+                spaceBetween: 30,
+            },
+            1400: {
+                slidesPerView: 4,
+                spaceBetween: 20,
+            },
+        }
+    });
     new Swiper(".mySwiper-banner2-slide", {
         spaceBetween: 3,
         autoplay: {
             delay: 2500,
             disableOnInteraction: false,
         },
-            
+
             breakpoints: {
                 0: {
                     slidesPerView: 1,
@@ -99,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 500: {
                     slidesPerView: 1,
-                    spaceBetween: 0,    
+                    spaceBetween: 0,
                 },
                 768: {
                     slidesPerView: 2,
@@ -118,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     spaceBetween: 40,
                 },
             }
-        
+
     });
 
     // News Slider
@@ -129,7 +171,7 @@ function animateCounter(element, targetValue) {
     let current = 0;
     const duration = 2000; // 2 seconds
     const step = targetValue / (duration / 16);
-    
+
     const timer = setInterval(() => {
         current += step;
         if (current >= targetValue) {
@@ -175,13 +217,13 @@ let currentlyPlaying = null;
         function playVideo(videoId) {
             const video = document.getElementById(videoId);
             const videoSection = video.closest('.video-section');
-            
+
             // If there's another video playing, stop it
             if (currentlyPlaying && currentlyPlaying !== video) {
                 currentlyPlaying.pause();
                 currentlyPlaying.closest('.video-section').classList.remove('playing');
             }
-            
+
             if (video.paused) {
                 video.play();
                 videoSection.classList.add('playing');
@@ -205,7 +247,7 @@ let currentlyPlaying = null;
             const videoThumbnails = document.querySelectorAll('.video-thumbnail');
             const videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
             const modalVideo = document.querySelector('#videoModal video');
-        
+
             videoThumbnails.forEach(thumbnail => {
                 thumbnail.addEventListener('click', function() {
                     const videoUrl = this.dataset.videoUrl;
@@ -214,7 +256,7 @@ let currentlyPlaying = null;
                     modalVideo.play();
                 });
             });
-        
+
             document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
                 modalVideo.pause();
                 modalVideo.currentTime = 0;
