@@ -110,7 +110,7 @@ class VolunteerController extends BaseController
             // Fetch language data
             $language_data = Banner::select('title','image','type')->orderBy('sort_by', 'asc')->get();
             // Return success response
-            return $this->sendResponse($language_data, 'App string retrieved successfully.');
+            return $this->sendResponse($language_data, 'Banners retrieved successfully.');
         } catch (\Exception $e) {
             // Handle exceptions and return error response
             return $this->sendError('An error occurred while retrieving app strings.', $e->getMessage());
